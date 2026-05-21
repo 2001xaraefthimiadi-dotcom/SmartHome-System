@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "SmartHome.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\SmartHome.Blazor\\SmartHome.Blazor.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
