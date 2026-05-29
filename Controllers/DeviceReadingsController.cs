@@ -17,11 +17,13 @@ namespace SmartHome.API.Controllers
     public class DeviceReadingsController : ControllerBase
     {
         private readonly AppDbContext _context;
-
-        public DeviceReadingsController(AppDbContext context)
+        private readonly IHubContext<SmartHomeHub> _hubContext;
+        public DeviceReadingsController(AppDbContext context, IHubContext<SmartHomeHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
+
 
         [HttpPost]
 
@@ -105,6 +107,13 @@ namespace SmartHome.API.Controllers
 
             await _hubContext.Clients.All.SendAsync("DeviceStatusChanged");
 
+            if (executedAutomations.Any())
+            {
+                await _hubContext.Clients.All.SendAsync(
+                    "AutomationExecuted",
+                    "Automation executed successfully.");
+            }
+
             return Ok(new
             {
                 message = "Reading stored successfully",
@@ -155,14 +164,6 @@ namespace SmartHome.API.Controllers
                 throw new UnauthorizedAccessException("Invalid token");
 
             return int.Parse(userIdClaim);
-        }
-
-        private readonly IHubContext<SmartHomeHub> _hubContext;
-
-        public DeviceReadingsController(AppDbContext context, IHubContext<SmartHomeHub> hubContext)
-        {
-            _context = context;
-            _hubContext = hubContext;
         }
     }
 }
