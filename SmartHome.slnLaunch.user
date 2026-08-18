@@ -7,6 +7,10 @@
         "Action": "Start"
       },
       {
+        "Path": "..\\SmartHome.Mobile\\SmartHome.Mobile.csproj",
+        "Action": "Start"
+      },
+      {
         "Path": "..\\SmartHome.Blazor\\SmartHome.Blazor.csproj",
         "Action": "Start"
       }

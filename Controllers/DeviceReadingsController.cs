@@ -101,18 +101,20 @@ namespace SmartHome.API.Controllers
                     DeviceId = automation.TargetDevice.Id,
                     NewStatus = automation.TargetDevice.Status.ToString()
                 });
+                var notificationMessage =
+                   $"{automation.Name}\n" +
+                   $"{automation.TargetDevice.Name} turned " +
+                   $"{automation.TargetDevice.Status.ToString().ToUpper()}.";
+
+                await _hubContext.Clients.All.SendAsync(
+                    "AutomationExecuted",
+                    notificationMessage);
             }
 
             await _context.SaveChangesAsync();
 
             await _hubContext.Clients.All.SendAsync("DeviceStatusChanged");
 
-            if (executedAutomations.Any())
-            {
-                await _hubContext.Clients.All.SendAsync(
-                    "AutomationExecuted",
-                    "Automation executed successfully.");
-            }
 
             return Ok(new
             {

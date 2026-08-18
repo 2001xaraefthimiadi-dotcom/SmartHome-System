@@ -2,5 +2,6 @@
   <Project Path="../SmartHome.Blazor/SmartHome.Blazor.csproj" Id="65ccf524-e3f7-45d7-b227-eac67021ed3d" />
   <Project Path="../SmartHome.Core/SmartHome.Core.csproj" />
   <Project Path="../SmartHome.Infrastructure/SmartHome.Infrastructure.csproj" />
+  <Project Path="../SmartHome.Mobile/SmartHome.Mobile.csproj" Id="b6f5e327-b79a-4afd-bf02-52add73ffaa1" />
   <Project Path="SmartHome.csproj" />
 </Solution>
