@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SmartHome.Mobile.DeviceDetailsPage"
+    Title="Device Details"
+    BackgroundColor="#F4F6FB">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24"
+                             Spacing="16">
+
+            <Border Padding="22"
+                    BackgroundColor="White"
+                    StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label x:Name="DeviceIconLabel"
+                           Text="🏠"
+                           FontSize="42"
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="DeviceNameLabel"
+                           Text="Device"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           TextColor="#0F172A"
+                           HorizontalOptions="Center" />
+
+                    <Label x:Name="LocationLabel"
+                           Text="Location"
+                           TextColor="#64748B"
+                           HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Border Padding="20"
+                    BackgroundColor="White"
+                    StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                      ColumnDefinitions="*,Auto"
+                      RowSpacing="14">
+
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Text="Status"
+                           FontAttributes="Bold" />
+
+                    <Label Grid.Row="0"
+                           Grid.Column="1"
+                           x:Name="StatusLabel"
+                           Text="OFF"
+                           TextColor="#16A34A"
+                           FontAttributes="Bold" />
+
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Text="Online"
+                           FontAttributes="Bold" />
+
+                    <Label Grid.Row="1"
+                           Grid.Column="1"
+                           x:Name="OnlineLabel"
+                           Text="Offline"
+                           TextColor="#2563EB" />
+
+                    <Label Grid.Row="2"
+                           Grid.Column="0"
+                           Text="Device Type"
+                           FontAttributes="Bold" />
+
+                    <Label Grid.Row="2"
+                           Grid.Column="1"
+                           x:Name="DeviceTypeLabel"
+                           Text="Unknown" />
+
+                    <Label Grid.Row="3"
+                           Grid.Column="0"
+                           Text="Power Consumption"
+                           FontAttributes="Bold" />
+
+                    <Label Grid.Row="3"
+                           Grid.Column="1"
+                           x:Name="PowerLabel"
+                           Text="0 W"
+                           TextColor="#2563EB"
+                           FontAttributes="Bold" />
+
+                </Grid>
+
+            </Border>
+
+            <Label Text="Recent Energy Logs"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="#0F172A" />
+
+            <CollectionView x:Name="EnergyLogsCollection"
+                            EmptyView="No energy logs found.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+                        <Border Padding="16"
+                                Margin="0,0,0,10"
+                                BackgroundColor="White"
+                                StrokeThickness="0">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14" />
+                            </Border.StrokeShape>
+
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto">
+
+                                <Label Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="{Binding WattsText}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#0F172A" />
+
+                                <Label Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="{Binding DateText}"
+                                       TextColor="#64748B" />
+
+                                <Label Grid.RowSpan="2"
+                                       Grid.Column="1"
+                                       Text="⚡"
+                                       FontSize="26"
+                                       VerticalOptions="Center" />
+
+                            </Grid>
+
+                        </Border>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+            <Label x:Name="MessageLabel"
+                   TextColor="#DC2626"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

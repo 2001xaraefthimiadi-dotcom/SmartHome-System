@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Shell
+    x:Class="SmartHome.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SmartHome.Mobile"
+    Title="SmartHome.Mobile"
+    Shell.FlyoutBehavior="Disabled">
+
+    <!-- Login page -->
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+    <!-- Main application tabs -->
+    <TabBar Route="MainTabs">
+
+        <ShellContent
+            Title="Home"
+            Route="DashboardPage"
+            ContentTemplate="{DataTemplate local:DashboardPage}" />
+
+        <ShellContent
+            Title="Devices"
+            Route="DevicesPage"
+            ContentTemplate="{DataTemplate local:DevicesPage}" />
+
+        <ShellContent
+            Title="Automations"
+            Route="AutomationsPage"
+            ContentTemplate="{DataTemplate local:AutomationsPage}" />
+
+        <ShellContent
+            Title="Energy"
+            Route="EnergyPage"
+            ContentTemplate="{DataTemplate local:EnergyPage}" />    
+
+    </TabBar>
+
+</Shell>

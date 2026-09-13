@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="SmartHome.Mobile.EnergyPage"
+    Title="Energy"
+    BackgroundColor="#F4F6FB">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="24"
+          RowSpacing="16">
+
+        <Label Grid.Row="0"
+               Text="Energy Analytics"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#0F172A" />
+
+        <VerticalStackLayout Grid.Row="1"
+                             Spacing="14">
+
+            <Border Padding="18"
+                    BackgroundColor="White"
+                    StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Select Device"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#0F172A" />
+
+                    <Picker x:Name="DevicePicker"
+                            Title="Select a device"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedIndexChanged="OnDeviceSelected" />
+
+                    <Button Text="Load Energy Data"
+                            BackgroundColor="#1B6EC2"
+                            TextColor="White"
+                            CornerRadius="12"
+                            Clicked="OnLoadEnergyClicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Border Padding="18"
+                    BackgroundColor="White"
+                    StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Total Consumption"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#0F172A" />
+
+                    <Label x:Name="TotalEnergyLabel"
+                           Text="0 W"
+                           FontSize="30"
+                           FontAttributes="Bold"
+                           TextColor="#2563EB" />
+
+                </VerticalStackLayout>
+
+            </Border>
+            
+            <Border Padding="18"
+                    BackgroundColor="White"
+                    StrokeThickness="0">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="Energy Consumption Chart"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#0F172A" />
+
+                    <GraphicsView x:Name="EnergyChartView"
+                                    HeightRequest="220" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Label x:Name="MessageLabel"
+                   TextColor="#DC2626"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="2"
+                        x:Name="EnergyLogsCollection"
+                        EmptyView="No energy logs found.">
+
+            <CollectionView.Header>
+                <Label Text="Recent Energy Logs"
+                       FontSize="21"
+                       FontAttributes="Bold"
+                       TextColor="#0F172A"
+                       Margin="0,4,0,12" />
+            </CollectionView.Header>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border Padding="16"
+                            Margin="0,0,0,10"
+                            BackgroundColor="White"
+                            StrokeThickness="0">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto">
+
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding WattsText}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#0F172A" />
+
+                            <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="{Binding DateText}"
+                                   TextColor="#64748B" />
+
+                            <Label Grid.RowSpan="2"
+                                   Grid.Column="1"
+                                   Text="⚡"
+                                   FontSize="26"
+                                   VerticalOptions="Center" />
+
+                        </Grid>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

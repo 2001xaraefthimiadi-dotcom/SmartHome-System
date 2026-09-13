@@ -1,0 +1,91 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Web
+@inject SmartHome.Blazor.Services.ApiService Api
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow p-5">
+
+            <div class="text-center mb-4">
+                <h2>🔐 Login</h2>
+                <p class="text-muted">
+                    Sign in to access your Smart Home dashboard.
+                </p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="alert @(isSuccess ? "alert-success" : "alert-danger")">
+                    @message
+                </div>
+            }
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control"
+                       @bind="email"
+                       @bind:event="oninput"
+                       @onkeydown="HandleKeyDown"
+                       placeholder="Enter your email" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input class="form-control"
+                       @bind="password"
+                       @bind:event="oninput"
+                       @onkeydown="HandleKeyDown"
+                       type="password"
+                       placeholder="Enter your password" />
+            </div>
+
+            <button type="button"
+                    class="btn btn-primary w-100"
+                    @onclick="HandleLogin">
+                Login
+            </button>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    string email = "";
+    string password = "";
+    string? message;
+    bool isSuccess;
+
+    async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await HandleLogin();
+        }
+    }
+
+    async Task HandleLogin()
+    {
+        message = "Trying login...";
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            isSuccess = false;
+            message = "Please enter email and password.";
+            return;
+        }
+
+        var token = await Api.Login(email, password);
+
+        if (token == null)
+        {
+            isSuccess = false;
+            message = "Login failed. Please check your credentials.";
+        }
+        else
+        {
+            isSuccess = true;
+            message = "Login successful!";
+        }
+    }
+}

@@ -1,0 +1,132 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject SmartHome.Blazor.Services.ApiService Api
+
+<div class="dashboard-title">
+    Smart Home Dashboard
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow p-4">
+            <h6 class="text-muted">Total Devices</h6>
+            <h2>@totalDevices</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow p-4">
+            <h6 class="text-muted">Online Devices</h6>
+            <h2 class="text-success">@onlineDevices</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow p-4">
+            <h6 class="text-muted">Active Automations</h6>
+            <h2 class="text-primary">@activeAutomations</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow p-4">
+            <h6 class="text-muted">Powered On</h6>
+            <h2 class="text-warning">@poweredOnDevices</h2>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card shadow p-4">
+            <h4>🏠 Devices</h4>
+            <p class="text-muted">Manage and monitor your smart devices.</p>
+            <NavLink href="/devices" class="btn btn-primary">Open Devices</NavLink>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow p-4">
+            <h4>⚡ Energy Analytics</h4>
+            <p class="text-muted">View energy usage and analytics.</p>
+            <NavLink href="/energy" class="btn btn-primary">Open Dashboard</NavLink>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow p-4">
+            <h4>🤖 Automation</h4>
+            <p class="text-muted">Configure automation rules.</p>
+            <NavLink href="/automations" class="btn btn-primary">Open Automations</NavLink>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mt-3">
+
+    <div class="col-md-6">
+        <div class="card shadow p-4">
+            <h4>📡 Simulation Engine</h4>
+            <p class="text-muted">Simulate sensors and smart home activity.</p>
+            <NavLink href="/simulation" class="btn btn-dark">Open Simulation</NavLink>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow p-4">
+            <h4>🔐 Authentication</h4>
+            <p class="text-muted">Secure JWT login system.</p>
+            <NavLink href="/login" class="btn btn-outline-primary">Login</NavLink>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    int totalDevices;
+    int onlineDevices;
+    int poweredOnDevices;
+    int activeAutomations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardStats();
+
+        await Api.StartSignalRAsync(async () =>
+        {
+            await LoadDashboardStats();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+    async Task LoadDashboardStats()
+    {
+        try
+        {
+            var devices = await Api.GetDevicesList();
+            var automations = await Api.GetAutomations();
+
+            if (devices != null)
+            {
+                totalDevices = devices.Count;
+                onlineDevices = devices.Count(d => d.IsOnline);
+                poweredOnDevices = devices.Count(d => d.Status == 1);
+            }
+
+            if (automations != null)
+            {
+                activeAutomations = automations.Count(a => a.IsActive);
+            }
+        }
+        catch
+        {
+            totalDevices = 0;
+            onlineDevices = 0;
+            poweredOnDevices = 0;
+            activeAutomations = 0;
+        }
+    }
+}

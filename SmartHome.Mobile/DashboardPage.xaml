@@ -1,0 +1,48 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartHome.Mobile.DashboardPage"
+             BackgroundColor="#F4F6FB">
+
+    <VerticalStackLayout Padding="30"
+                         Spacing="20">
+
+        <Label Text="Smart Home Dashboard"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#0F172A" />
+
+        <Border Padding="20"
+                BackgroundColor="White"
+                Stroke="#E2E8F0"
+                StrokeThickness="1">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="15">
+
+                <Label Text="Smart Home Statistics"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="#0F172A" />
+
+                <Label x:Name="TotalDevicesLabel"
+                       Text="Total Devices: 0" />
+
+                <Label x:Name="OnlineDevicesLabel"
+                       Text="Online Devices: 0" />
+
+                <Label x:Name="ActiveAutomationsLabel"
+                       Text="Active Automations: 0" />
+
+                <Label x:Name="PoweredOnLabel"
+                       Text="Powered On: 0" />
+
+            </VerticalStackLayout>
+
+        </Border>
+
+    </VerticalStackLayout>
+
+</ContentPage>

@@ -1,0 +1,402 @@
+﻿@page "/automations"
+@rendermode InteractiveServer
+@inject SmartHome.Blazor.Services.ApiService Api
+
+@using SmartHome.Blazor.Models
+
+<div class="dashboard-title">
+    Automation Management
+</div>
+
+@if (!string.IsNullOrEmpty(message))
+{
+        <div class="alert alert-success shadow-sm">
+            @message
+        </div>
+}
+
+<div class="card shadow p-4 mb-4">
+
+    <h4 class="mb-4">
+        Create Automation Rule
+    </h4>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="mb-3">
+                <label class="form-label">Automation Name</label>
+
+                <input class="form-control"
+                       @bind="newAutomation.Name"
+                       placeholder="Automation name" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Condition Type</label>
+
+                <select class="form-select"
+                        @bind="newAutomation.ConditionType">
+
+                    <option value="1">
+                        Temperature Greater Than
+                    </option>
+
+                    <option value="2">
+                        Temperature Less Than
+                    </option>
+
+                    <option value="3">
+                        Energy Greater Than
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">
+                    Condition Value
+                </label>
+
+                <input class="form-control"
+                       type="number"
+                       step="0.1"
+                       @bind="newAutomation.ConditionValue" />
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Target Device
+                </label>
+
+                <select class="form-select"
+                        @bind="newAutomation.TargetDeviceId">
+
+                    <option value="0">
+                        Select device
+                    </option>
+
+                    @if (devices != null)
+                    {
+                        @foreach (var device in devices)
+                        {
+                            <option value="@device.Id">
+                                @device.Name (@device.Location)
+                            </option>
+                        }
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Action
+                </label>
+
+                <select class="form-select"
+                        @bind="newAutomation.Action">
+
+                    <option value="1">
+                        Turn On
+                    </option>
+
+                    <option value="2">
+                        Turn Off
+                    </option>
+
+                    <option value="3">
+                        Toggle
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (isEditing)
+    {
+        <button class="btn btn-success"
+                @onclick="SaveAutomation">
+            Save Changes
+        </button>
+
+        <button class="btn btn-outline-secondary"
+                @onclick="CancelEdit">
+            Cancel
+        </button>
+    }
+    else
+    {
+        <button class="btn btn-primary"
+                @onclick="CreateAutomation">
+            Add Automation
+        </button>
+    }
+
+        <button class="btn btn-outline-secondary"
+                @onclick="LoadData">
+
+            Refresh
+
+        </button>
+
+    </div>
+
+<div class="card shadow p-4">
+
+    <h4 class="mb-4">
+        Active Automation Rules
+    </h4>
+
+    @if (automations == null)
+    {
+        <p>Loading automations...</p>
+    }
+    else if (!automations.Any())
+    {
+        <p>No automations found.</p>
+    }
+    else
+    {
+        <table class="table table-striped align-middle">
+
+            <thead>
+
+                <tr>
+                    <th>Name</th>
+                    <th>Condition</th>
+                    <th>Target Device</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var automation in automations)
+                {
+                    <tr>
+
+                        <td>
+                            @automation.Name
+                        </td>
+
+                        <td>
+                            @GetCondition(automation.ConditionType)
+                            @automation.ConditionValue
+                        </td>
+
+                        <td>
+                            @GetDeviceName(automation.TargetDeviceId)
+                        </td>
+
+                        <td>
+                            @GetAction(automation.Action)
+                        </td>
+
+                        <td>
+
+                            @if (automation.IsActive)
+                            {
+                                <span class="status-on">
+                                    🟢 ACTIVE
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-off">
+                                    ⚫ DISABLED
+                                </span>
+                            }
+
+                        </td>
+                        <td class="text-nowrap">
+
+                            <button class="btn btn-sm btn-primary me-2"
+                                    title="Edit Automation"
+                                    @onclick="() => StartEdit(automation)">
+                                ✏️
+                            </button>
+
+                            <button class="btn btn-sm btn-danger"
+                                    title="Delete Automation"
+                                    @onclick="() => DeleteAutomation(automation.Id)">
+                                🗑️
+                            </button>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>
+
+@code {
+
+    List<AutomationModel>? automations;
+
+    List<DeviceModel>? devices;
+
+    AutomationModel newAutomation = new()
+    {
+        ConditionType = 1,
+        Action = 1
+    };
+
+    string? message;
+
+    bool isEditing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
+        devices = await Api.GetDevicesList();
+        automations = await Api.GetAutomations();
+    }
+
+    async Task CreateAutomation()
+    {
+        message = null;
+
+        if (string.IsNullOrWhiteSpace(newAutomation.Name))
+        {
+            message = "Please enter automation name.";
+            return;
+        }
+
+        if (newAutomation.TargetDeviceId == 0)
+        {
+            message = "Please select target device.";
+            return;
+        }
+
+        var success =
+            await Api.CreateAutomation(newAutomation);
+
+        if (success)
+        {
+            message =
+                "Automation created successfully.";
+
+            newAutomation = new AutomationModel
+            {
+                ConditionType = 1,
+                Action = 1
+            };
+
+            await LoadData();
+        }
+        else
+        {
+            message =
+                "Failed to create automation.";
+        }
+    }
+
+    string GetDeviceName(int deviceId)
+    {
+        var device = devices?
+            .FirstOrDefault(d => d.Id == deviceId);
+
+        return device == null
+            ? $"Device #{deviceId}"
+            : device.Name;
+    }
+
+    string GetCondition(int conditionType) => conditionType switch
+    {
+        1 => "Temperature > ",
+        2 => "Temperature < ",
+        3 => "Energy > ",
+        _ => "Unknown "
+    };
+
+    string GetAction(int action) => action switch
+    {
+        1 => "Turn On",
+        2 => "Turn Off",
+        3 => "Toggle",
+        _ => "Unknown"
+    };
+    void StartEdit(AutomationModel automation)
+    {
+        isEditing = true;
+
+        newAutomation = new AutomationModel
+        {
+            Id = automation.Id,
+            Name = automation.Name,
+            ConditionType = automation.ConditionType,
+            ConditionValue = automation.ConditionValue,
+            Action = automation.Action,
+            TargetDeviceId = automation.TargetDeviceId,
+            IsActive = automation.IsActive
+        };
+    }
+
+    async Task SaveAutomation()
+    {
+        var success = await Api.UpdateAutomation(newAutomation);
+
+        if (success)
+        {
+            message = "Automation updated successfully.";
+
+            isEditing = false;
+
+            newAutomation = new AutomationModel();
+
+            await LoadData();
+        }
+        else
+        {
+            message = "Failed to update automation.";
+        }
+    }
+
+    async Task DeleteAutomation(int id)
+    {
+        var success = await Api.DeleteAutomation(id);
+
+        if (success)
+        {
+            message = "Automation deleted successfully.";
+
+            await LoadData();
+        }
+        else
+        {
+            message = "Failed to delete automation.";
+        }
+    }
+
+    void CancelEdit()
+    {
+        isEditing = false;
+
+        newAutomation = new AutomationModel();
+	}
+}

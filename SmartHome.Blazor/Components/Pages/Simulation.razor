@@ -1,0 +1,212 @@
+﻿@page "/simulation"
+@rendermode InteractiveServer
+@inject SmartHome.Blazor.Services.ApiService Api
+
+@using SmartHome.Blazor.Models
+
+
+<div class="container mt-4">
+
+    <h1 class="mb-4">Smart Home Simulation</h1>
+
+    <div class="row">
+
+        <!-- LEFT PANEL -->
+        <div class="col-md-4">
+
+            <div class="card shadow p-4">
+
+                <h4 class="mb-3">Sensor Input</h4>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Device</label>
+
+                    <select class="form-select" @bind="reading.DeviceId">
+
+                        <option value="0">Select Device</option>
+
+                        @if (devices != null)
+                        {
+                            @foreach (var device in devices)
+                            {
+                                <option value="@device.Id">
+                                    @device.Name (@device.Location)
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Reading Type</label>
+
+                    <select class="form-select" @bind="reading.ReadingType">
+                        <option value="1">Temperature</option>
+                        <option value="2">Humidity</option>
+                        <option value="3">Energy</option>
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Value</label>
+
+                    <input class="form-control"
+                           type="number"
+                           step="0.1"
+                           @bind="reading.Value" />
+
+                </div>
+
+                <button class="btn btn-primary w-100"
+                        @onclick="SendReading">
+
+                    Send Reading
+
+                </button>
+
+            </div>
+
+        </div>
+        <!-- RIGHT PANEL -->
+        <div class="col-md-8">
+
+            <div class="card shadow p-4">
+
+                <h4 class="mb-3">Simulation Result</h4>
+
+                @if (string.IsNullOrEmpty(responseMessage))
+                {
+                    <div class="alert alert-secondary">
+                        No simulation executed yet.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success">
+                        Simulation executed successfully.
+                    </div>
+
+                    <pre class="bg-dark text-light p-3 rounded">
+@responseMessage
+                    </pre>
+                }
+
+            </div>
+
+            <br />
+
+            <div class="card shadow p-4">
+
+                <h4 class="mb-3">Connected Devices</h4>
+
+                @if (devices == null)
+                {
+                    <p>Loading devices...</p>
+                }
+                else
+                {
+                    <table class="table table-striped">
+
+                        <thead>
+
+                            <tr>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Online</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var device in devices)
+                            {
+                                <tr>
+
+                                    <td>@device.Name</td>
+
+                                    <td>@device.Location</td>
+
+                                    <td>
+
+                                        @if (device.Status == 1)
+                                        {
+                                            <span class="badge bg-success">
+                                                ON
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                OFF
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (device.IsOnline)
+                                        {
+                                            <span class="text-success">
+                                                ● Online
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">
+                                                ● Offline
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code 
+{
+
+    List<DeviceModel>? devices;
+
+    ReadingModel reading = new()
+    {
+        ReadingType = 1
+    };
+
+    string? responseMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        devices = await Api.GetDevicesList();
+    }
+
+    async Task SendReading()
+    {
+        responseMessage = await Api.SendReading(reading);
+
+        devices = await Api.GetDevicesList();
+
+        await Task.Delay(3000);
+    }
+}

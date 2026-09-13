@@ -1,0 +1,169 @@
+﻿@page "/energy"
+@rendermode InteractiveServer
+@inject SmartHome.Blazor.Services.ApiService Api
+
+@using SmartHome.Blazor.Models
+
+@inject IJSRuntime JS
+
+<div class="container mt-4">
+
+    <h1 class="mb-4">Energy Analytics Dashboard</h1>
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card shadow p-4">
+
+                <h4>Select Device</h4>
+
+                <select class="form-select mb-3"
+                        @bind="selectedDeviceId">
+
+                    <option value="0">Select Device</option>
+
+                    @if (devices != null)
+                    {
+                        @foreach (var device in devices)
+                        {
+                            <option value="@device.Id">
+                                @device.Name
+                            </option>
+                        }
+                    }
+
+                </select>
+
+                <button class="btn btn-primary w-100"
+                        @onclick="LoadEnergyData">
+
+                    Load Analytics
+
+                </button>
+
+            </div>
+
+            <br />
+
+            <div class="card shadow p-4">
+
+                <h4>Total Consumption</h4>
+
+                <h2 class="text-primary">
+                    @totalEnergy W
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+
+            <div class="card shadow p-4">
+
+                <h4 class="mb-3">Energy Logs</h4>
+
+                @if (logs == null)
+                {
+                    <p>No data loaded.</p>
+                }
+                else if (!logs.Any())
+                {
+                    <p>No logs found.</p>
+                }
+                else
+                {
+                    <table class="table table-striped">
+
+                        <thead>
+
+                            <tr>
+                                <th>Watts</th>
+                                <th>Recorded At</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var log in logs)
+                            {
+                                <tr>
+
+                                    <td>@log.ConsumedWatts W</td>
+
+                                    <td>
+                                        @log.RecordedAt.ToLocalTime()
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                    <hr />
+
+                    <h4 class="mb-3">
+                        Consumption Trend
+                    </h4>
+
+                    <canvas id="energyChart"></canvas>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+
+    List<DeviceModel>? devices;
+
+    List<EnergyLogModel>? logs;
+
+    int selectedDeviceId;
+
+    double totalEnergy = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        devices = await Api.GetDevicesList();
+    }
+
+    async Task LoadEnergyData()
+    {
+        if (selectedDeviceId == 0)
+            return;
+
+        logs = await Api.GetEnergyLogs(selectedDeviceId);
+
+        var result = await Api.GetTotalEnergy(selectedDeviceId);
+
+        if (result != null)
+        {
+            totalEnergy = result.TotalConsumedWatts;
+            if (logs != null && logs.Any())
+            {
+                var labels = logs
+                    .Select(l => l.RecordedAt.ToLocalTime().ToString("HH:mm:ss"))
+                    .ToArray();
+
+                var values = logs
+                    .Select(l => l.ConsumedWatts)
+                    .ToArray();
+
+                await JS.InvokeVoidAsync(
+                    "renderEnergyChart",
+                    labels,
+                    values);
+            }
+        }
+    }
+}

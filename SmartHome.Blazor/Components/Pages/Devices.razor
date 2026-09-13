@@ -1,0 +1,300 @@
+﻿@page "/devices"
+@rendermode InteractiveServer
+@inject SmartHome.Blazor.Services.ApiService Api
+
+@using SmartHome.Blazor.Models
+
+<div class="dashboard-title">
+    Device Management
+</div>
+@if (showNotification)
+{
+    <div class="alert alert-success shadow-sm">
+        🔔 @notificationMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+        <div class="alert alert-success shadow-sm">
+            @message
+        </div>
+}
+
+<div class="card shadow p-4 mb-4">
+
+    <h4 class="mb-4">
+        Add New Device
+    </h4>
+
+    <label>Device Name</label><br />
+    <input class="form-control" @bind="newDevice.Name" placeholder="π.χ. Living Room Lamp" />
+    <br />
+
+    <label>Location</label><br />
+    <input class="form-control" @bind="newDevice.Location" placeholder="π.χ. Living Room" />
+    <br />
+
+    <label>Device Type</label><br />
+    <select class="form-select" @bind="newDevice.Type">
+        <option value="1">Light</option>
+        <option value="2">Thermostat</option>
+        <option value="3">Sensor</option>
+        <option value="4">Smart Plug</option>
+        <option value="5">Door Lock</option>
+    </select>
+    <br />
+
+    <label>Power Consumption (W)</label><br />
+    <input class="form-control"
+           type="number"
+           step="0.1"
+           @bind="newDevice.PowerConsumption" />
+    <br />
+
+    @if (isEditing)
+    {
+        <button class="btn btn-success"
+                @onclick="SaveDevice">
+            Save Changes
+        </button>
+
+        <button class="btn btn-outline-secondary"
+                @onclick="CancelEdit">
+            Cancel
+        </button>
+    }
+    else
+    {
+        <button class="btn btn-primary"
+                @onclick="CreateDevice">
+            Add Device
+        </button>
+    }
+
+    <button class="btn btn-outline-secondary"
+            @onclick="LoadDevices">
+        Refresh
+    </button>
+
+    </div>
+
+<hr />
+
+@if (devices == null)
+{
+    <p>Loading devices...</p>
+}
+else if (!devices.Any())
+{
+    <p>No devices found.</p>
+}
+else
+{
+    <div class="card shadow p-4">
+
+        <h4 class="mb-4">
+            Connected Devices
+        </h4>
+
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Online</th>
+                    <th>Power</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var device in devices)
+                {
+                    <tr>
+                        <td>@device.Id</td>
+                        <td>@device.Name</td>
+                        <td>@device.Location</td>
+                        <td>@GetDeviceType(device.Type)</td>
+                        <td>
+                            @if (device.Status == 1)
+                            {
+                                <span class="status-on">🟢 ON</span>
+                            }
+                            else
+                            {
+                                <span class="status-off">⚫ OFF</span>
+                            }
+                        </td>
+                        <td>
+                            @if (device.IsOnline)
+                            {
+                                <span class="text-success fw-bold">● Online</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-bold">● Offline</span>
+                            }
+                        </td>
+                        <td>@device.PowerConsumption W</td>
+                        <td class="text-nowrap">
+                            <button class="btn btn-sm btn-primary me-2"
+                                    title="Edit Device"
+                                    @onclick="() => StartEdit(device)">
+                                ✏️
+                            </button>
+
+                            <button class="btn btn-sm btn-danger"
+                                    title="Delete Device"
+                                    @onclick="() => DeleteDevice(device.Id)">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+
+@code {
+    List<DeviceModel>? devices;
+    DeviceModel newDevice = new() { Type = 1 };
+    string? message;
+    bool isEditing = false;
+    bool showNotification;
+    string notificationMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDevices();
+
+        await Api.StartSignalRAsync(
+            async () =>
+            {
+                await LoadDevices();
+                await InvokeAsync(StateHasChanged);
+            },
+            async (message) =>
+            {
+                notificationMessage = message;
+                showNotification = true;
+
+                await InvokeAsync(StateHasChanged);
+
+                await Task.Delay(3000);
+
+                showNotification = false;
+                await InvokeAsync(StateHasChanged);
+            });
+    }
+
+    async Task LoadDevices()
+    {
+        devices = await Api.GetDevicesList();
+    }
+
+    async Task CreateDevice()
+    {
+        message = null;
+
+        if (string.IsNullOrWhiteSpace(newDevice.Name))
+        {
+            message = "Please enter a device name.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(newDevice.Location))
+        {
+            message = "Please enter a location.";
+            return;
+        }
+
+        var success = await Api.CreateDevice(newDevice);
+
+        if (success)
+        {
+            message = "Device added successfully.";
+            newDevice = new DeviceModel { Type = 1 };
+            await LoadDevices();
+        }
+        else
+        {
+            message = "Failed to add device.";
+        }
+    }
+
+    string GetDeviceType(int type) => type switch
+    {
+        1 => "Light",
+        2 => "Thermostat",
+        3 => "Sensor",
+        4 => "Smart Plug",
+        5 => "Door Lock",
+        _ => "Unknown"
+    };
+
+    string GetStatus(int status) => status switch
+    {
+        0 => "Off",
+        1 => "On",
+        2 => "Standby",
+        _ => "Unknown"
+    };
+    void StartEdit(DeviceModel device)
+    {
+        isEditing = true;
+
+        newDevice = new DeviceModel
+        {
+            Id = device.Id,
+            Name = device.Name,
+            Location = device.Location,
+            Type = device.Type,
+            Status = device.Status,
+            IsOnline = device.IsOnline,
+            PowerConsumption = device.PowerConsumption
+        };
+    }
+
+    async Task SaveDevice()
+    {
+        var success = await Api.UpdateDevice(newDevice);
+
+        if (success)
+        {
+            message = "Device updated successfully.";
+            isEditing = false;
+            newDevice = new DeviceModel { Type = 1 };
+            await LoadDevices();
+        }
+        else
+        {
+            message = "Failed to update device.";
+        }
+    }
+
+    async Task DeleteDevice(int id)
+    {
+        var success = await Api.DeleteDevice(id);
+
+        if (success)
+        {
+            message = "Device deleted successfully.";
+            await LoadDevices();
+        }
+        else
+        {
+            message = "Failed to delete device.";
+        }
+    }
+
+    void CancelEdit()
+    {
+        isEditing = false;
+        newDevice = new DeviceModel { Type = 1 };
+    }
+}

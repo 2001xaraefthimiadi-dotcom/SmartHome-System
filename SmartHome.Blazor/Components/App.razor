@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <script>
+            (function () {
+                const isDark = localStorage.getItem("darkMode") === "true";
+
+                if (isDark) {
+                    document.documentElement.classList.add("dark-mode");
+                    document.body?.classList.add("dark-mode");
+                }
+            })();
+    </script>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="SmartHome.Blazor.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+    <script>
+            const savedTheme = localStorage.getItem("darkMode");
+            if (savedTheme === "true") {
+                document.documentElement.classList.add("dark-mode");
+            }
+    </script>
+</head>
+
+<body>
+    <Routes />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/charts.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/theme.js"></script>
+    <script src="_framework/blazor.web.js"></script>
+
+    <script>
+        Blazor.addEventListener('enhancedload', () => {
+        window.themeManager.loadTheme();
+        });
+    </script>
+</body>
+
+</html>

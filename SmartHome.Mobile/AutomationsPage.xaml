@@ -1,0 +1,67 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartHome.Mobile.AutomationsPage"
+             BackgroundColor="#F4F6FB"
+             Title="Automations">
+
+    <Grid Padding="25"
+          RowDefinitions="Auto,*,Auto"
+          RowSpacing="15">
+
+        <Label Grid.Row="0"
+               Text="Automations"
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="#0F172A" />
+
+        <CollectionView Grid.Row="1"
+                        x:Name="AutomationsCollection">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border Padding="18"
+                            BackgroundColor="White"
+                            Stroke="#E2E8F0"
+                            StrokeThickness="1"
+                            Margin="0,0,0,12">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="6">
+
+                            <Label Text="{Binding Name}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#0F172A" />
+
+                            <Label Text="{Binding ConditionText}"
+                                   TextColor="#64748B" />
+
+                            <Label Text="{Binding ActionText}"
+                                   TextColor="#2563EB"
+                                   FontAttributes="Bold" />
+
+                            <Label Text="{Binding StatusText}"
+                                   TextColor="#16A34A"
+                                   FontAttributes="Bold" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <Label Grid.Row="2"
+               x:Name="MessageLabel"
+               TextColor="Red"
+               HorizontalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>
