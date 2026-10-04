@@ -17,22 +17,22 @@ public class DeviceViewModel
     public double PowerConsumption { get; set; }
 
     public string StatusText =>
-        Status == 1 ? "● ON" : "● OFF";
+        Status == 1 ? "● ΕΝΕΡΓΗ" : "● ΑΝΕΝΕΡΓΗ";
 
     public string OnlineText =>
-        IsOnline ? "Online" : "Offline";
+        IsOnline ? "Συνδεδεμένη" : "Εκτός σύνδεσης";
 
     public string PowerText =>
         $"{PowerConsumption:N1} W";
 
     public string TypeText => Type switch
     {
-        1 => "Light",
-        2 => "Thermostat",
-        3 => "Sensor",
-        4 => "Smart Plug",
-        5 => "Door Lock",
-        _ => "Unknown"
+        1 => "Φωτισμός",
+        2 => "Θερμοστάτης",
+        3 => "Αισθητήρας",
+        4 => "Έξυπνη Πρίζα",
+        5 => "Έξυπνη Κλειδαριά",
+        _ => "Άγνωστος"
     };
 
     public string Icon => Type switch

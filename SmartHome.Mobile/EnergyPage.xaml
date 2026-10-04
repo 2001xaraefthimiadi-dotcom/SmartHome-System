@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SmartHome.Mobile.EnergyPage"
-    Title="Energy"
+    Title="Ενέργεια"
     BackgroundColor="#F4F6FB">
 
     <Grid RowDefinitions="Auto,Auto,*"
@@ -12,7 +12,7 @@
           RowSpacing="16">
 
         <Label Grid.Row="0"
-               Text="Energy Analytics"
+               Text="Ανάλυση Ενέργειας"
                FontSize="28"
                FontAttributes="Bold"
                TextColor="#0F172A" />
@@ -30,17 +30,17 @@
 
                 <VerticalStackLayout Spacing="12">
 
-                    <Label Text="Select Device"
+                    <Label Text="Επιλογή Συσκευής"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#0F172A" />
 
                     <Picker x:Name="DevicePicker"
-                            Title="Select a device"
+                            Title="Επιλέξτε συσκευή"
                             ItemDisplayBinding="{Binding Name}"
                             SelectedIndexChanged="OnDeviceSelected" />
 
-                    <Button Text="Load Energy Data"
+                    <Button Text="Φόρτωση Δεδομένων Ενέργειας"
                             BackgroundColor="#1B6EC2"
                             TextColor="White"
                             CornerRadius="12"
@@ -60,7 +60,7 @@
 
                 <VerticalStackLayout Spacing="6">
 
-                    <Label Text="Total Consumption"
+                    <Label Text="Συνολική Κατανάλωση"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#0F172A" />
@@ -74,7 +74,7 @@
                 </VerticalStackLayout>
 
             </Border>
-            
+
             <Border Padding="18"
                     BackgroundColor="White"
                     StrokeThickness="0">
@@ -85,13 +85,13 @@
 
                 <VerticalStackLayout Spacing="12">
 
-                    <Label Text="Energy Consumption Chart"
+                    <Label Text="Γράφημα Κατανάλωσης Ενέργειας"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#0F172A" />
 
                     <GraphicsView x:Name="EnergyChartView"
-                                    HeightRequest="220" />
+                                  HeightRequest="220" />
 
                 </VerticalStackLayout>
 
@@ -105,10 +105,10 @@
 
         <CollectionView Grid.Row="2"
                         x:Name="EnergyLogsCollection"
-                        EmptyView="No energy logs found.">
+                        EmptyView="Δεν βρέθηκαν καταγραφές ενέργειας.">
 
             <CollectionView.Header>
-                <Label Text="Recent Energy Logs"
+                <Label Text="Πρόσφατες Καταγραφές Ενέργειας"
                        FontSize="21"
                        FontAttributes="Bold"
                        TextColor="#0F172A"

@@ -25,7 +25,7 @@ public partial class MainPage : ContentPage
         if (string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password))
         {
-            MessageLabel.Text = "Please enter email and password.";
+            MessageLabel.Text = "Παρακαλώ εισαγάγετε email και κωδικό πρόσβασης.";
             return;
         }
 
@@ -48,7 +48,7 @@ public partial class MainPage : ContentPage
 
             if (!response.IsSuccessStatusCode)
             {
-                MessageLabel.Text = "Login failed.";
+                MessageLabel.Text = "Η σύνδεση απέτυχε. Ελέγξτε τα στοιχεία σας.";
                 return;
             }
 
@@ -62,21 +62,21 @@ public partial class MainPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                MessageLabel.Text = "Invalid login response.";
+                MessageLabel.Text = "Μη έγκυρη απόκριση σύνδεσης.";
                 return;
             }
 
             await SecureStorage.SetAsync("jwt_token", token);
 
             MessageLabel.TextColor = Colors.Green;
-            MessageLabel.Text = "Login successful!";
+            MessageLabel.Text = "Η σύνδεση πραγματοποιήθηκε επιτυχώς!";
 
             await Shell.Current.GoToAsync("//MainTabs/DashboardPage");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             MessageLabel.TextColor = Colors.Red;
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text = "Παρουσιάστηκε σφάλμα κατά τη σύνδεση. Προσπαθήστε ξανά.";
         }
     }
 }

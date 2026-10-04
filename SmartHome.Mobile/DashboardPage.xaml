@@ -6,7 +6,7 @@
     <VerticalStackLayout Padding="30"
                          Spacing="20">
 
-        <Label Text="Smart Home Dashboard"
+        <Label Text="Πίνακας Ελέγχου Έξυπνου Σπιτιού"
                FontSize="28"
                FontAttributes="Bold"
                TextColor="#0F172A" />
@@ -22,22 +22,22 @@
 
             <VerticalStackLayout Spacing="15">
 
-                <Label Text="Smart Home Statistics"
+                <Label Text="Στατιστικά Έξυπνου Σπιτιού"
                        FontSize="20"
                        FontAttributes="Bold"
                        TextColor="#0F172A" />
 
                 <Label x:Name="TotalDevicesLabel"
-                       Text="Total Devices: 0" />
+                       Text="Σύνολο Συσκευών: 0" />
 
                 <Label x:Name="OnlineDevicesLabel"
-                       Text="Online Devices: 0" />
+                       Text="Συνδεδεμένες Συσκευές: 0" />
 
                 <Label x:Name="ActiveAutomationsLabel"
-                       Text="Active Automations: 0" />
+                       Text="Ενεργοί Αυτοματισμοί: 0" />
 
                 <Label x:Name="PoweredOnLabel"
-                       Text="Powered On: 0" />
+                       Text="Ενεργοποιημένες Συσκευές: 0" />
 
             </VerticalStackLayout>
 

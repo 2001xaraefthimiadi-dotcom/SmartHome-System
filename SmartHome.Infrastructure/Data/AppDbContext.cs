@@ -83,6 +83,11 @@ namespace SmartHome.Infrastructure.Data
                       .WithMany(x => x.AutomationRules)
                       .HasForeignKey(x => x.TargetDeviceId)
                       .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.SourceDevice)
+                      .WithMany()
+                      .HasForeignKey(x => x.SourceDeviceId)
+                      .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<EnergyLog>(entity =>

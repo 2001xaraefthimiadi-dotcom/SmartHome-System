@@ -29,7 +29,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == request.DeviceId && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             var energyLog = new EnergyLog
             {
@@ -59,7 +59,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == deviceId && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             var logs = await _context.EnergyLogs
                 .Where(e => e.DeviceId == deviceId)
@@ -85,7 +85,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == deviceId && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             var total = await _context.EnergyLogs
                 .Where(e => e.DeviceId == deviceId)
@@ -103,7 +103,7 @@ namespace SmartHome.API.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
-                throw new UnauthorizedAccessException("Invalid token");
+                throw new UnauthorizedAccessException("Μη έγκυρο διακριτικό σύνδεσης.");
 
             return int.Parse(userIdClaim);
         }

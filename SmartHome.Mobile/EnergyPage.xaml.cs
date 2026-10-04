@@ -1,6 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿using SmartHome.Mobile.Models;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using SmartHome.Mobile.Models;
 
 namespace SmartHome.Mobile;
 
@@ -38,7 +38,7 @@ public partial class EnergyPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                MessageLabel.Text = "You are not authenticated.";
+                MessageLabel.Text = "Δεν έχετε συνδεθεί.";
                 return;
             }
 
@@ -50,7 +50,7 @@ public partial class EnergyPage : ContentPage
 
             if (!response.IsSuccessStatusCode)
             {
-                MessageLabel.Text = "Failed to load devices.";
+                MessageLabel.Text = "Αποτυχία φόρτωσης των συσκευών.";
                 return;
             }
 
@@ -71,9 +71,10 @@ public partial class EnergyPage : ContentPage
                 DevicePicker.SelectedIndex = 0;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text =
+                "Παρουσιάστηκε σφάλμα κατά τη φόρτωση των συσκευών.";
         }
     }
 
@@ -98,7 +99,7 @@ public partial class EnergyPage : ContentPage
 
             if (DevicePicker.SelectedItem is not DeviceModel selectedDevice)
             {
-                MessageLabel.Text = "Please select a device.";
+                MessageLabel.Text = "Παρακαλώ επιλέξτε μια συσκευή.";
                 return;
             }
 
@@ -106,7 +107,7 @@ public partial class EnergyPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                MessageLabel.Text = "You are not authenticated.";
+                MessageLabel.Text = "Δεν έχετε συνδεθεί.";
                 return;
             }
 
@@ -127,7 +128,7 @@ public partial class EnergyPage : ContentPage
             if (!logsResponse.IsSuccessStatusCode ||
                 !totalResponse.IsSuccessStatusCode)
             {
-                MessageLabel.Text = "Failed to load energy data.";
+                MessageLabel.Text = "Αποτυχία φόρτωσης των δεδομένων ενέργειας.";
                 return;
             }
 
@@ -170,9 +171,10 @@ public partial class EnergyPage : ContentPage
 
             EnergyChartView.Invalidate();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text =
+                "Παρουσιάστηκε σφάλμα κατά τη φόρτωση των δεδομένων ενέργειας.";
         }
     }
 }

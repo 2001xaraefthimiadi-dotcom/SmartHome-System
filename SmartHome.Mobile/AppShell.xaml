@@ -5,37 +5,37 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SmartHome.Mobile"
-    Title="SmartHome.Mobile"
+    Title="SmartHome"
     Shell.FlyoutBehavior="Disabled">
 
-    <!-- Login page -->
+    <!-- Σελίδα σύνδεσης -->
     <ShellContent
-        Title="Login"
+        Title="Σύνδεση"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
-    <!-- Main application tabs -->
+    <!-- Κύριες καρτέλες εφαρμογής -->
     <TabBar Route="MainTabs">
 
         <ShellContent
-            Title="Home"
+            Title="Αρχική"
             Route="DashboardPage"
             ContentTemplate="{DataTemplate local:DashboardPage}" />
 
         <ShellContent
-            Title="Devices"
+            Title="Συσκευές"
             Route="DevicesPage"
             ContentTemplate="{DataTemplate local:DevicesPage}" />
 
         <ShellContent
-            Title="Automations"
+            Title="Αυτοματισμοί"
             Route="AutomationsPage"
             ContentTemplate="{DataTemplate local:AutomationsPage}" />
 
         <ShellContent
-            Title="Energy"
+            Title="Ενέργεια"
             Route="EnergyPage"
-            ContentTemplate="{DataTemplate local:EnergyPage}" />    
+            ContentTemplate="{DataTemplate local:EnergyPage}" />
 
     </TabBar>
 

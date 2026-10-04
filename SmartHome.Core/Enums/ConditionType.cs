@@ -10,6 +10,7 @@ namespace SmartHome.Core.Enums
     {
         TemperatureGreaterThan = 1,
         TemperatureLessThan = 2,
-        EnergyGreaterThan = 3
+        EnergyGreaterThan = 3,
+        TimeOfDay = 4
     }
 }

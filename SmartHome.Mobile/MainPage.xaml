@@ -25,7 +25,7 @@
 
                 <VerticalStackLayout Spacing="15">
 
-                    <Label Text="Login"
+                    <Label Text="Σύνδεση"
                            FontSize="26"
                            FontAttributes="Bold"
                            TextColor="#0F172A"
@@ -36,10 +36,10 @@
                            Keyboard="Email" />
 
                     <Entry x:Name="PasswordEntry"
-                           Placeholder="Password"
+                           Placeholder="Κωδικός Πρόσβασης"
                            IsPassword="True" />
 
-                    <Button Text="Login"
+                    <Button Text="Σύνδεση"
                             BackgroundColor="#1B6EC2"
                             TextColor="White"
                             CornerRadius="12"

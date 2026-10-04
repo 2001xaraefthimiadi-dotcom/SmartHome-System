@@ -5,7 +5,7 @@
 @using SmartHome.Blazor.Models
 
 <div class="dashboard-title">
-    Automation Management
+    Διαχείριση Αυτοματισμών
 </div>
 
 @if (!string.IsNullOrEmpty(message))
@@ -18,7 +18,7 @@
 <div class="card shadow p-4 mb-4">
 
     <h4 class="mb-4">
-        Create Automation Rule
+        Δημιουργία Αυτοματισμού
     </h4>
 
     <div class="row">
@@ -26,44 +26,91 @@
         <div class="col-md-6">
 
             <div class="mb-3">
-                <label class="form-label">Automation Name</label>
+                <label class="form-label">Όνομα Αυτοματισμού</label>
 
                 <input class="form-control"
                        @bind="newAutomation.Name"
-                       placeholder="Automation name" />
+                       placeholder="Όνομα Αυτοματισμού" />
             </div>
 
+            @if (newAutomation.ConditionType != 4)
+            {
+                <div class="mb-3">
+                    <label class="form-label">
+                        Συσκευή Πηγής
+                    </label>
+
+                    <select class="form-select"
+                            @bind="newAutomation.SourceDeviceId">
+
+                        <option value="">
+                            Επιλέξτε συσκευή πηγής
+                        </option>
+
+                        @if (devices != null)
+                        {
+                            @foreach (var device in devices)
+                            {
+                                <option value="@device.Id">
+                                    @device.Name (@device.Location)
+                                </option>
+                            }
+                        }
+
+                    </select>
+                </div>
+            }
+
             <div class="mb-3">
-                <label class="form-label">Condition Type</label>
+                <label class="form-label">Τύπος Συνθήκης</label>
 
                 <select class="form-select"
                         @bind="newAutomation.ConditionType">
 
                     <option value="1">
-                        Temperature Greater Than
+                        Θερμοκρασία μεγαλύτερη από
                     </option>
 
                     <option value="2">
-                        Temperature Less Than
+                        Θερμοκρασία μικρότερη από
                     </option>
 
                     <option value="3">
-                        Energy Greater Than
+                        Ενέργεια μεγαλύτερη από
+                    </option>
+
+                    <option value="4">
+                        Ώρα εκτέλεσης
                     </option>
 
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">
-                    Condition Value
-                </label>
+            @if (newAutomation.ConditionType == 4)
+            {
+                <div class="mb-3">
+                    <label class="form-label">
+                        Ώρα Εκτέλεσης
+                    </label>
 
-                <input class="form-control"
-                       type="number"
-                       step="0.1"
-                       @bind="newAutomation.ConditionValue" />
-            </div>
+                    <input class="form-control"
+                           type="time"
+                           @bind="newAutomation.ScheduledTime" />
+                </div>
+            }
+            else
+            {
+                <div class="mb-3">
+                    <label class="form-label">
+                        Τιμή Συνθήκης
+                    </label>
+
+                    <input class="form-control"
+                           type="number"
+                           step="0.1"
+                           @bind="newAutomation.ConditionValue" />
+                </div>
+            }
 
         </div>
 
@@ -72,14 +119,14 @@
             <div class="mb-3">
 
                 <label class="form-label">
-                    Target Device
+                    Συσκευή Στόχου
                 </label>
 
                 <select class="form-select"
                         @bind="newAutomation.TargetDeviceId">
 
                     <option value="0">
-                        Select device
+                        Επιλέξτε συσκευή 
                     </option>
 
                     @if (devices != null)
@@ -99,22 +146,22 @@
             <div class="mb-3">
 
                 <label class="form-label">
-                    Action
+                    Ενέργεια
                 </label>
 
                 <select class="form-select"
                         @bind="newAutomation.Action">
 
                     <option value="1">
-                        Turn On
+                        Ενεργοποίηση
                     </option>
 
                     <option value="2">
-                        Turn Off
+                        Απενεργοποίηση
                     </option>
 
                     <option value="3">
-                        Toggle
+                        Εναλλαγή
                     </option>
 
                 </select>
@@ -129,26 +176,26 @@
     {
         <button class="btn btn-success"
                 @onclick="SaveAutomation">
-            Save Changes
+            Αποθήκευση Αλλαγών
         </button>
 
         <button class="btn btn-outline-secondary"
                 @onclick="CancelEdit">
-            Cancel
+            Ακύρωση
         </button>
     }
     else
     {
         <button class="btn btn-primary"
                 @onclick="CreateAutomation">
-            Add Automation
+            Προσθήκη Αυτοματισμού
         </button>
     }
 
         <button class="btn btn-outline-secondary"
                 @onclick="LoadData">
 
-            Refresh
+        Ανανέωση
 
         </button>
 
@@ -157,16 +204,16 @@
 <div class="card shadow p-4">
 
     <h4 class="mb-4">
-        Active Automation Rules
+        Ενεργοί Αυτοματισμοί
     </h4>
 
     @if (automations == null)
     {
-        <p>Loading automations...</p>
+        <p>Φόρτωση αυτοματισμών...</p>
     }
     else if (!automations.Any())
     {
-        <p>No automations found.</p>
+        <p>Δεν βρέθηκαν αυτοματισμοί.</p>
     }
     else
     {
@@ -175,12 +222,15 @@
             <thead>
 
                 <tr>
-                    <th>Name</th>
-                    <th>Condition</th>
-                    <th>Target Device</th>
-                    <th>Action</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    
+                      <th>Όνομα</th>
+                      <th>Συσκευή Πηγής</th>
+                      <th>Συνθήκη</th>
+                      <th>Συσκευή Στόχου</th>
+                      <th>Ενέργεια</th>
+                      <th>Κατάσταση</th>
+                      <th>Ενέργειες</th>
+                    
                 </tr>
 
             </thead>
@@ -196,8 +246,25 @@
                         </td>
 
                         <td>
-                            @GetCondition(automation.ConditionType)
-                            @automation.ConditionValue
+                            @(automation.SourceDeviceId.HasValue
+                                ? GetDeviceName(automation.SourceDeviceId.Value)
+                                : "-")
+                        </td>
+
+                        <td>
+                            @if (automation.ConditionType == 4)
+                            {
+                                <span>
+                                    @(automation.ScheduledTime?.ToString("HH:mm") ?? "-")
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    @GetCondition(automation.ConditionType)
+                                    @automation.ConditionValue
+                                </span>
+                            }
                         </td>
 
                         <td>
@@ -213,13 +280,13 @@
                             @if (automation.IsActive)
                             {
                                 <span class="status-on">
-                                    🟢 ACTIVE
+                                    🟢 ΕΝΕΡΓΟΣ
                                 </span>
                             }
                             else
                             {
                                 <span class="status-off">
-                                    ⚫ DISABLED
+                                    ⚫ ΑΝΕΝΕΡΓΟΣ
                                 </span>
                             }
 
@@ -227,13 +294,13 @@
                         <td class="text-nowrap">
 
                             <button class="btn btn-sm btn-primary me-2"
-                                    title="Edit Automation"
+                                    title="Επεξεργασία Αυτοματισμού"
                                     @onclick="() => StartEdit(automation)">
                                 ✏️
                             </button>
 
                             <button class="btn btn-sm btn-danger"
-                                    title="Delete Automation"
+                                    title="Διαγραφή Αυτοματισμού"
                                     @onclick="() => DeleteAutomation(automation.Id)">
                                 🗑️
                             </button>
@@ -283,13 +350,25 @@
 
         if (string.IsNullOrWhiteSpace(newAutomation.Name))
         {
-            message = "Please enter automation name.";
+            message = "Παρακαλώ εισάγετε όνομα αυτοματισμού.";
+            return;
+        }
+        if (newAutomation.ConditionType != 4 &&
+            !newAutomation.SourceDeviceId.HasValue)
+        {
+            message = "Παρακαλώ επιλέξτε συσκευή πηγής.";
             return;
         }
 
+        if (newAutomation.ConditionType == 4 &&
+            !newAutomation.ScheduledTime.HasValue)
+        {
+            message = "Παρακαλώ επιλέξτε ώρα εκτέλεσης.";
+            return;
+        }
         if (newAutomation.TargetDeviceId == 0)
         {
-            message = "Please select target device.";
+            message = "Παρακαλώ επιλέξτε συσκευή στόχου.";
             return;
         }
 
@@ -299,7 +378,7 @@
         if (success)
         {
             message =
-                "Automation created successfully.";
+                "Ο αυτοματισμός δημιουργήθηκε επιτυχώς.";
 
             newAutomation = new AutomationModel
             {
@@ -312,7 +391,7 @@
         else
         {
             message =
-                "Failed to create automation.";
+                "Αποτυχία δημιουργίας αυτοματισμού.";
         }
     }
 
@@ -322,24 +401,25 @@
             .FirstOrDefault(d => d.Id == deviceId);
 
         return device == null
-            ? $"Device #{deviceId}"
+            ? $"Συσκευή  #{deviceId}"
             : device.Name;
     }
 
     string GetCondition(int conditionType) => conditionType switch
     {
-        1 => "Temperature > ",
-        2 => "Temperature < ",
-        3 => "Energy > ",
-        _ => "Unknown "
+        1 => "Θερμοκρασία > ",
+        2 => "Θερμοκρασία < ",
+        3 => "Ενέργεια > ",
+        4 => "Ώρα εκτέλεσης ",
+        _ => "Άγνωστη Συνθήκη "
     };
 
     string GetAction(int action) => action switch
     {
-        1 => "Turn On",
-        2 => "Turn Off",
-        3 => "Toggle",
-        _ => "Unknown"
+        1 => "Ενεργοποίηση",
+        2 => "Απενεργοποίηση",
+        3 => "Εναλλαγή",
+        _ => "Άγνωστη Ενέργεια"
     };
     void StartEdit(AutomationModel automation)
     {
@@ -353,17 +433,48 @@
             ConditionValue = automation.ConditionValue,
             Action = automation.Action,
             TargetDeviceId = automation.TargetDeviceId,
-            IsActive = automation.IsActive
+            IsActive = automation.IsActive,
+            SourceDeviceId = automation.SourceDeviceId,
+            ScheduledTime = automation.ScheduledTime,
+            LastExecutedAt = automation.LastExecutedAt
         };
     }
 
     async Task SaveAutomation()
     {
+        message = null;
+
+        if (string.IsNullOrWhiteSpace(newAutomation.Name))
+        {
+            message = "Παρακαλώ εισάγετε όνομα αυτοματισμού.";
+            return;
+        }
+
+        if (newAutomation.ConditionType != 4 &&
+            !newAutomation.SourceDeviceId.HasValue)
+        {
+            message = "Παρακαλώ επιλέξτε συσκευή πηγής.";
+            return;
+        }
+
+        if (newAutomation.ConditionType == 4 &&
+            !newAutomation.ScheduledTime.HasValue)
+        {
+            message = "Παρακαλώ επιλέξτε ώρα εκτέλεσης.";
+            return;
+        }
+
+        if (newAutomation.TargetDeviceId == 0)
+        {
+            message = "Παρακαλώ επιλέξτε συσκευή στόχου.";
+            return;
+        }
+
         var success = await Api.UpdateAutomation(newAutomation);
 
         if (success)
         {
-            message = "Automation updated successfully.";
+            message = "Ο αυτοματισμός ενημερώθηκε επιτυχώς.";
 
             isEditing = false;
 
@@ -373,7 +484,7 @@
         }
         else
         {
-            message = "Failed to update automation.";
+            message = "Αποτυχία ενημέρωσης αυτοματισμού.";
         }
     }
 
@@ -383,13 +494,13 @@
 
         if (success)
         {
-            message = "Automation deleted successfully.";
+            message = "Ο αυτοματισμός διαγράφηκε επιτυχώς.";
 
             await LoadData();
         }
         else
         {
-            message = "Failed to delete automation.";
+            message = "Αποτυχία διαγραφής αυτοματισμού.";
         }
     }
 

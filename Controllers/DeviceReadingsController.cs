@@ -49,7 +49,10 @@ namespace SmartHome.API.Controllers
 
             var automations = await _context.Automations
                 .Include(a => a.TargetDevice)
-                .Where(a => a.UserId == userId && a.IsActive)
+                .Where(a =>
+                    a.UserId == userId &&
+                    a.IsActive &&
+                    a.SourceDeviceId == request.DeviceId)
                 .ToListAsync();
 
             var executedAutomations = new List<object>();
@@ -101,10 +104,13 @@ namespace SmartHome.API.Controllers
                     DeviceId = automation.TargetDevice.Id,
                     NewStatus = automation.TargetDevice.Status.ToString()
                 });
+                var statusText = automation.TargetDevice.Status == DeviceStatus.On
+                    ? "ΕΝΕΡΓΟΠΟΙΗΘΗΚΕ"
+                    : "ΑΠΕΝΕΡΓΟΠΟΙΗΘΗΚΕ";
+
                 var notificationMessage =
-                   $"{automation.Name}\n" +
-                   $"{automation.TargetDevice.Name} turned " +
-                   $"{automation.TargetDevice.Status.ToString().ToUpper()}.";
+                    $"{automation.Name}\n" +
+                    $"{automation.TargetDevice.Name}: {statusText}.";
 
                 await _hubContext.Clients.All.SendAsync(
                     "AutomationExecuted",
@@ -118,7 +124,7 @@ namespace SmartHome.API.Controllers
 
             return Ok(new
             {
-                message = "Reading stored successfully",
+                message = "Η μέτρηση αποθηκεύτηκε επιτυχώς.",
                 reading = new
                 {
                     reading.Id,
@@ -140,7 +146,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == deviceId && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             var readings = await _context.DeviceReadings
                 .Where(r => r.DeviceId == deviceId)
@@ -163,7 +169,7 @@ namespace SmartHome.API.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
-                throw new UnauthorizedAccessException("Invalid token");
+                throw new UnauthorizedAccessException("Μη έγκυρο διακριτικό σύνδεσης.");
 
             return int.Parse(userIdClaim);
         }

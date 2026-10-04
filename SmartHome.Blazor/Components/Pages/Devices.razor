@@ -5,8 +5,9 @@
 @using SmartHome.Blazor.Models
 
 <div class="dashboard-title">
-    Device Management
+    Διαχείριση Συσκευών
 </div>
+
 @if (showNotification)
 {
     <div class="alert alert-success shadow-sm">
@@ -16,36 +17,40 @@
 
 @if (!string.IsNullOrEmpty(message))
 {
-        <div class="alert alert-success shadow-sm">
-            @message
-        </div>
+    <div class="alert alert-success shadow-sm">
+        @message
+    </div>
 }
 
 <div class="card shadow p-4 mb-4">
 
     <h4 class="mb-4">
-        Add New Device
+        Προσθήκη Νέας Συσκευής
     </h4>
 
-    <label>Device Name</label><br />
-    <input class="form-control" @bind="newDevice.Name" placeholder="π.χ. Living Room Lamp" />
+    <label>Όνομα Συσκευής</label><br />
+    <input class="form-control"
+           @bind="newDevice.Name"
+           placeholder="π.χ. Κεντρικό Φως Σαλονιού" />
     <br />
 
-    <label>Location</label><br />
-    <input class="form-control" @bind="newDevice.Location" placeholder="π.χ. Living Room" />
+    <label>Τοποθεσία</label><br />
+    <input class="form-control"
+           @bind="newDevice.Location"
+           placeholder="π.χ. Σαλόνι" />
     <br />
 
-    <label>Device Type</label><br />
+    <label>Τύπος Συσκευής</label><br />
     <select class="form-select" @bind="newDevice.Type">
-        <option value="1">Light</option>
-        <option value="2">Thermostat</option>
-        <option value="3">Sensor</option>
-        <option value="4">Smart Plug</option>
-        <option value="5">Door Lock</option>
+        <option value="1">Φωτισμός</option>
+        <option value="2">Θερμοστάτης</option>
+        <option value="3">Αισθητήρας</option>
+        <option value="4">Έξυπνη Πρίζα</option>
+        <option value="5">Έξυπνη Κλειδαριά</option>
     </select>
     <br />
 
-    <label>Power Consumption (W)</label><br />
+    <label>Κατανάλωση Ισχύος (W)</label><br />
     <input class="form-control"
            type="number"
            step="0.1"
@@ -56,60 +61,61 @@
     {
         <button class="btn btn-success"
                 @onclick="SaveDevice">
-            Save Changes
+            Αποθήκευση Αλλαγών
         </button>
 
         <button class="btn btn-outline-secondary"
                 @onclick="CancelEdit">
-            Cancel
+            Ακύρωση
         </button>
     }
     else
     {
         <button class="btn btn-primary"
                 @onclick="CreateDevice">
-            Add Device
+            Προσθήκη Συσκευής
         </button>
     }
 
     <button class="btn btn-outline-secondary"
             @onclick="LoadDevices">
-        Refresh
+        Ανανέωση
     </button>
 
-    </div>
+</div>
 
 <hr />
 
 @if (devices == null)
 {
-    <p>Loading devices...</p>
+    <p>Φόρτωση συσκευών...</p>
 }
 else if (!devices.Any())
 {
-    <p>No devices found.</p>
+    <p>Δεν βρέθηκαν συσκευές.</p>
 }
 else
 {
     <div class="card shadow p-4">
 
         <h4 class="mb-4">
-            Connected Devices
+            Συνδεδεμένες Συσκευές
         </h4>
 
         <table class="table table-striped align-middle">
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Online</th>
-                    <th>Power</th>
-                    <th>Actions</th>
+                    <th>Όνομα</th>
+                    <th>Τοποθεσία</th>
+                    <th>Τύπος</th>
+                    <th>Κατάσταση</th>
+                    <th>Σύνδεση</th>
+                    <th>Ισχύς</th>
+                    <th>Ενέργειες</th>
                 </tr>
             </thead>
+
             <tbody>
                 @foreach (var device in devices)
                 {
@@ -118,36 +124,44 @@ else
                         <td>@device.Name</td>
                         <td>@device.Location</td>
                         <td>@GetDeviceType(device.Type)</td>
+
                         <td>
                             @if (device.Status == 1)
                             {
-                                <span class="status-on">🟢 ON</span>
+                                <span class="status-on">🟢 ΕΝΕΡΓΗ</span>
                             }
                             else
                             {
-                                <span class="status-off">⚫ OFF</span>
+                                <span class="status-off">⚫ ΑΝΕΝΕΡΓΗ</span>
                             }
                         </td>
+
                         <td>
                             @if (device.IsOnline)
                             {
-                                <span class="text-success fw-bold">● Online</span>
+                                <span class="text-success fw-bold">
+                                    ● Συνδεδεμένη
+                                </span>
                             }
                             else
                             {
-                                <span class="text-danger fw-bold">● Offline</span>
+                                <span class="text-danger fw-bold">
+                                    ● Εκτός σύνδεσης
+                                </span>
                             }
                         </td>
+
                         <td>@device.PowerConsumption W</td>
+
                         <td class="text-nowrap">
                             <button class="btn btn-sm btn-primary me-2"
-                                    title="Edit Device"
+                                    title="Επεξεργασία Συσκευής"
                                     @onclick="() => StartEdit(device)">
                                 ✏️
                             </button>
 
                             <button class="btn btn-sm btn-danger"
-                                    title="Delete Device"
+                                    title="Διαγραφή Συσκευής"
                                     @onclick="() => DeleteDevice(device.Id)">
                                 🗑️
                             </button>
@@ -203,13 +217,13 @@ else
 
         if (string.IsNullOrWhiteSpace(newDevice.Name))
         {
-            message = "Please enter a device name.";
+            message = "Παρακαλώ εισαγάγετε όνομα συσκευής.";
             return;
         }
 
         if (string.IsNullOrWhiteSpace(newDevice.Location))
         {
-            message = "Please enter a location.";
+            message = "Παρακαλώ εισαγάγετε τοποθεσία.";
             return;
         }
 
@@ -217,33 +231,34 @@ else
 
         if (success)
         {
-            message = "Device added successfully.";
+            message = "Η συσκευή προστέθηκε επιτυχώς.";
             newDevice = new DeviceModel { Type = 1 };
             await LoadDevices();
         }
         else
         {
-            message = "Failed to add device.";
+            message = "Αποτυχία προσθήκης συσκευής.";
         }
     }
 
     string GetDeviceType(int type) => type switch
     {
-        1 => "Light",
-        2 => "Thermostat",
-        3 => "Sensor",
-        4 => "Smart Plug",
-        5 => "Door Lock",
-        _ => "Unknown"
+        1 => "Φωτισμός",
+        2 => "Θερμοστάτης",
+        3 => "Αισθητήρας",
+        4 => "Έξυπνη Πρίζα",
+        5 => "Έξυπνη Κλειδαριά",
+        _ => "Άγνωστος Τύπος"
     };
 
     string GetStatus(int status) => status switch
     {
-        0 => "Off",
-        1 => "On",
-        2 => "Standby",
-        _ => "Unknown"
+        0 => "Ανενεργή",
+        1 => "Ενεργή",
+        2 => "Αναμονή",
+        _ => "Άγνωστη"
     };
+
     void StartEdit(DeviceModel device)
     {
         isEditing = true;
@@ -266,14 +281,14 @@ else
 
         if (success)
         {
-            message = "Device updated successfully.";
+            message = "Η συσκευή ενημερώθηκε επιτυχώς.";
             isEditing = false;
             newDevice = new DeviceModel { Type = 1 };
             await LoadDevices();
         }
         else
         {
-            message = "Failed to update device.";
+            message = "Αποτυχία ενημέρωσης συσκευής.";
         }
     }
 
@@ -283,12 +298,12 @@ else
 
         if (success)
         {
-            message = "Device deleted successfully.";
+            message = "Η συσκευή διαγράφηκε επιτυχώς.";
             await LoadDevices();
         }
         else
         {
-            message = "Failed to delete device.";
+            message = "Αποτυχία διαγραφής συσκευής.";
         }
     }
 

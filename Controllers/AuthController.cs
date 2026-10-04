@@ -28,7 +28,7 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             if (await _context.Users.AnyAsync(x => x.Email == request.Email))
-                return BadRequest("Email already exists");
+                return BadRequest("Το email χρησιμοποιείται ήδη.");
 
             var user = new User
             {
@@ -42,7 +42,7 @@ namespace SmartHome.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User created");
+            return Ok("Ο χρήστης δημιουργήθηκε επιτυχώς.");
         }
 
         [HttpPost("login")]
@@ -52,12 +52,12 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(x => x.Email == request.Email);
 
             if (user == null)
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Μη έγκυρο email ή κωδικός πρόσβασης.");
 
             var hashed = PasswordHelper.HashPassword(request.Password);
 
             if (user.PasswordHash != hashed)
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Μη έγκυρο email ή κωδικός πρόσβασης.");
 
             var token = GenerateJwtToken(user);
 

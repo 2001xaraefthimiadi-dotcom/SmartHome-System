@@ -8,9 +8,9 @@
         <div class="card shadow p-5">
 
             <div class="text-center mb-4">
-                <h2>🔐 Login</h2>
+                <h2>🔐 Σύνδεση</h2>
                 <p class="text-muted">
-                    Sign in to access your Smart Home dashboard.
+                    Συνδεθείτε για να αποκτήσετε πρόσβαση στο έξυπνο σπίτι σας.
                 </p>
             </div>
 
@@ -27,23 +27,23 @@
                        @bind="email"
                        @bind:event="oninput"
                        @onkeydown="HandleKeyDown"
-                       placeholder="Enter your email" />
+                       placeholder="Εισαγάγετε το email σας" />
             </div>
 
             <div class="mb-4">
-                <label class="form-label">Password</label>
+                <label class="form-label">Κωδικός Πρόσβασης</label>
                 <input class="form-control"
                        @bind="password"
                        @bind:event="oninput"
                        @onkeydown="HandleKeyDown"
                        type="password"
-                       placeholder="Enter your password" />
+                       placeholder="Εισαγάγετε τον κωδικό πρόσβασής σας" />
             </div>
 
             <button type="button"
                     class="btn btn-primary w-100"
                     @onclick="HandleLogin">
-                Login
+                Σύνδεση
             </button>
 
         </div>
@@ -66,12 +66,12 @@
 
     async Task HandleLogin()
     {
-        message = "Trying login...";
+        message = "Γίνεται προσπάθεια σύνδεσης...";
 
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             isSuccess = false;
-            message = "Please enter email and password.";
+            message = "Παρακαλώ εισαγάγετε email και κωδικό πρόσβασης.";
             return;
         }
 
@@ -80,12 +80,12 @@
         if (token == null)
         {
             isSuccess = false;
-            message = "Login failed. Please check your credentials.";
+            message = "Η σύνδεση απέτυχε. Ελέγξτε το email και τον κωδικό πρόσβασής σας.";
         }
         else
         {
             isSuccess = true;
-            message = "Login successful!";
+            message = "Η σύνδεση πραγματοποιήθηκε επιτυχώς!";
         }
     }
 }

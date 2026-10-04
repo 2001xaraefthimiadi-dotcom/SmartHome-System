@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using SmartHome.API.Hubs;
+using SmartHome.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     }); builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<AutomationSchedulerService>();
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(options =>
 {

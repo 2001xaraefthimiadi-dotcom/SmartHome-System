@@ -30,7 +30,7 @@ public partial class DashboardPage : ContentPage
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 await DisplayAlertAsync(
-                    "Automation Executed",
+                    "Εκτέλεση Αυτοματισμού",
                     message,
                     "OK");
             });
@@ -82,16 +82,16 @@ public partial class DashboardPage : ContentPage
                     });
 
             TotalDevicesLabel.Text =
-                $"Total Devices: {devices?.Count ?? 0}";
+                $"Σύνολο Συσκευών: {devices?.Count ?? 0}";
 
             OnlineDevicesLabel.Text =
-                $"Online Devices: {devices?.Count(d => d.IsOnline) ?? 0}";
+                $"Συνδεδεμένες Συσκευές: {devices?.Count(d => d.IsOnline) ?? 0}";
 
             PoweredOnLabel.Text =
-                $"Powered On: {devices?.Count(d => d.Status == 1) ?? 0}";
+                $"Ενεργοποιημένες Συσκευές: {devices?.Count(d => d.Status == 1) ?? 0}";
 
             ActiveAutomationsLabel.Text =
-                $"Active Automations: {automations?.Count(a => a.IsActive) ?? 0}";
+                $"Ενεργοί Αυτοματισμοί: {automations?.Count(a => a.IsActive) ?? 0}";
         }
         catch
         {

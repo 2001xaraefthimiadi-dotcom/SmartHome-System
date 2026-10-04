@@ -8,7 +8,7 @@
 
 <div class="container mt-4">
 
-    <h1 class="mb-4">Energy Analytics Dashboard</h1>
+    <h1 class="mb-4">Πίνακας Ανάλυσης Ενέργειας</h1>
 
     <div class="row">
 
@@ -16,12 +16,12 @@
 
             <div class="card shadow p-4">
 
-                <h4>Select Device</h4>
+                <h4>Επιλογή Συσκευής</h4>
 
                 <select class="form-select mb-3"
                         @bind="selectedDeviceId">
 
-                    <option value="0">Select Device</option>
+                    <option value="0">Επιλέξτε συσκευή</option>
 
                     @if (devices != null)
                     {
@@ -38,7 +38,7 @@
                 <button class="btn btn-primary w-100"
                         @onclick="LoadEnergyData">
 
-                    Load Analytics
+                    Φόρτωση Δεδομένων
 
                 </button>
 
@@ -48,7 +48,7 @@
 
             <div class="card shadow p-4">
 
-                <h4>Total Consumption</h4>
+                <h4>Συνολική Κατανάλωση</h4>
 
                 <h2 class="text-primary">
                     @totalEnergy W
@@ -62,15 +62,15 @@
 
             <div class="card shadow p-4">
 
-                <h4 class="mb-3">Energy Logs</h4>
+                <h4 class="mb-3">Καταγραφές Ενέργειας</h4>
 
                 @if (logs == null)
                 {
-                    <p>No data loaded.</p>
+                    <p>Δεν έχουν φορτωθεί δεδομένα.</p>
                 }
                 else if (!logs.Any())
                 {
-                    <p>No logs found.</p>
+                    <p>Δεν βρέθηκαν καταγραφές.</p>
                 }
                 else
                 {
@@ -79,8 +79,8 @@
                         <thead>
 
                             <tr>
-                                <th>Watts</th>
-                                <th>Recorded At</th>
+                                <th>Ισχύς (W)</th>
+                                <th>Χρόνος Καταγραφής</th>
                             </tr>
 
                         </thead>
@@ -107,7 +107,7 @@
                     <hr />
 
                     <h4 class="mb-3">
-                        Consumption Trend
+                        Εξέλιξη Κατανάλωσης
                     </h4>
 
                     <canvas id="energyChart"></canvas>
@@ -149,6 +149,7 @@
         if (result != null)
         {
             totalEnergy = result.TotalConsumedWatts;
+
             if (logs != null && logs.Any())
             {
                 var labels = logs

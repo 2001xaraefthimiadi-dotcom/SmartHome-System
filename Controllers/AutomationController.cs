@@ -29,6 +29,7 @@ namespace SmartHome.API.Controllers
             var automations = await _context.Automations
                 .Where(a => a.UserId == userId)
                 .Include(a => a.TargetDevice)
+                .Include(a => a.SourceDevice)
                 .ToListAsync();
 
             return Ok(automations.Select(a => new
@@ -37,10 +38,16 @@ namespace SmartHome.API.Controllers
                 a.Name,
                 a.ConditionType,
                 a.ConditionValue,
+                a.SourceDeviceId,
+                SourceDeviceName = a.SourceDevice != null
+                    ? a.SourceDevice.Name
+                    : null,
                 a.TargetDeviceId,
                 TargetDeviceName = a.TargetDevice.Name,
                 a.Action,
                 a.IsActive,
+                a.ScheduledTime,
+                a.LastExecutedAt,
                 a.CreatedAt
             }));
         }
@@ -51,22 +58,31 @@ namespace SmartHome.API.Controllers
             var userId = GetUserId();
 
             var automation = await _context.Automations
-                .Include(a => a.TargetDevice)
-                .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+            .Include(a => a.TargetDevice)
+            .Include(a => a.SourceDevice)
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
             if (automation == null)
-                return NotFound("Automation not found");
-
+                return NotFound("Ο αυτοματισμός δεν βρέθηκε.");
             return Ok(new
             {
                 automation.Id,
                 automation.Name,
                 automation.ConditionType,
                 automation.ConditionValue,
+
+                automation.SourceDeviceId,
+                SourceDeviceName = automation.SourceDevice != null
+                    ? automation.SourceDevice.Name
+                    : null,
+
                 automation.TargetDeviceId,
                 TargetDeviceName = automation.TargetDevice.Name,
+
                 automation.Action,
                 automation.IsActive,
+                automation.ScheduledTime,
+                automation.LastExecutedAt,
                 automation.CreatedAt
             });
         }
@@ -76,20 +92,51 @@ namespace SmartHome.API.Controllers
         {
             var userId = GetUserId();
 
+            if (request.ConditionType == ConditionType.TimeOfDay &&
+            !request.ScheduledTime.HasValue)
+            {
+                return BadRequest("Πρέπει να οριστεί ώρα εκτέλεσης.");
+            }
+
+            if (request.ConditionType != ConditionType.TimeOfDay &&
+                !request.SourceDeviceId.HasValue)
+            {
+                return BadRequest("Πρέπει να επιλεγεί συσκευή πηγής.");
+            }
+
+            Device? sourceDevice = null;
+
+            if (request.SourceDeviceId.HasValue)
+            {
+                sourceDevice = await _context.Devices
+                    .FirstOrDefaultAsync(d =>
+                        d.Id == request.SourceDeviceId.Value &&
+                        d.UserId == userId);
+
+                if (sourceDevice == null)
+                    return BadRequest("Η συσκευή πηγής δεν βρέθηκε.");
+            }
+
+
             var device = await _context.Devices
                 .FirstOrDefaultAsync(d => d.Id == request.TargetDeviceId && d.UserId == userId);
 
             if (device == null)
-                return BadRequest("Target device not found");
+                return BadRequest("Η συσκευή στόχου δεν βρέθηκε.");
 
             var automation = new AutomationRule
             {
                 Name = request.Name,
                 ConditionType = request.ConditionType,
                 ConditionValue = request.ConditionValue,
+                SourceDeviceId = request.ConditionType == ConditionType.TimeOfDay ? null
+                               : request.SourceDeviceId,
                 TargetDeviceId = request.TargetDeviceId,
                 Action = request.Action,
                 IsActive = true,
+                ScheduledTime = request.ConditionType == ConditionType.TimeOfDay
+                              ? request.ScheduledTime : null,
+                LastExecutedAt = null,
                 CreatedAt = DateTime.UtcNow,
                 UserId = userId
             };
@@ -107,7 +154,10 @@ namespace SmartHome.API.Controllers
                 automation.Action,
                 automation.IsActive,
                 automation.CreatedAt,
-                automation.UserId
+                automation.UserId,
+                automation.SourceDeviceId,
+                automation.ScheduledTime,
+                automation.LastExecutedAt
             });
         }
 
@@ -116,22 +166,54 @@ namespace SmartHome.API.Controllers
         {
             var userId = GetUserId();
 
+            if (request.ConditionType == ConditionType.TimeOfDay &&
+            !request.ScheduledTime.HasValue)
+            {
+                return BadRequest("Πρέπει να οριστεί ώρα εκτέλεσης.");
+            }
+
+            if (request.ConditionType != ConditionType.TimeOfDay &&
+                !request.SourceDeviceId.HasValue)
+            {
+                return BadRequest("Πρέπει να επιλεγεί συσκευή πηγής.");
+            }
+
+            Device? sourceDevice = null;
+
+            if (request.SourceDeviceId.HasValue)
+            {
+                sourceDevice = await _context.Devices
+                    .FirstOrDefaultAsync(d =>
+                        d.Id == request.SourceDeviceId.Value &&
+                        d.UserId == userId);
+
+                if (sourceDevice == null)
+                    return BadRequest("Η συσκευή πηγής δεν βρέθηκε.");
+            }
+
             var automation = await _context.Automations
                 .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
             if (automation == null)
-                return NotFound("Automation not found");
+                return NotFound("Ο αυτοματισμός δεν βρέθηκε.");
 
             var device = await _context.Devices
                 .FirstOrDefaultAsync(d => d.Id == request.TargetDeviceId && d.UserId == userId);
 
             if (device == null)
-                return BadRequest("Target device not found");
+                return BadRequest("Η συσκευή στόχου δεν βρέθηκε.");
 
             automation.Name = request.Name;
             automation.ConditionType = request.ConditionType;
             automation.ConditionValue = request.ConditionValue;
+            automation.SourceDeviceId = request.ConditionType == ConditionType.TimeOfDay
+                ? null
+                : request.SourceDeviceId;
+            automation.ScheduledTime = request.ConditionType == ConditionType.TimeOfDay
+                ? request.ScheduledTime
+                : null;
             automation.TargetDeviceId = request.TargetDeviceId;
+            automation.LastExecutedAt = null;
             automation.Action = request.Action;
             automation.IsActive = request.IsActive;
 
@@ -145,7 +227,10 @@ namespace SmartHome.API.Controllers
                 automation.ConditionValue,
                 automation.TargetDeviceId,
                 automation.Action,
-                automation.IsActive
+                automation.IsActive,
+                automation.SourceDeviceId,
+                automation.ScheduledTime,
+                automation.LastExecutedAt
             });
         }
 
@@ -158,12 +243,12 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
             if (automation == null)
-                return NotFound("Automation not found");
+                return NotFound("Ο αυτοματισμός δεν βρέθηκε.");
 
             _context.Automations.Remove(automation);
             await _context.SaveChangesAsync();
 
-            return Ok("Automation deleted");
+            return Ok("Ο αυτοματισμός διαγράφηκε");
         }
 
         [HttpPost("{id}/execute")]
@@ -176,10 +261,10 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
 
             if (automation == null)
-                return NotFound("Automation not found");
+                return NotFound("Ο αυτοματισμός δεν βρέθηκε.");
 
             if (!automation.IsActive)
-                return BadRequest("Automation is inactive");
+                return BadRequest("Ο αυτοματισμός είναι ανενεργός.");
 
             var conditionMet = automation.ConditionType switch
             {
@@ -190,7 +275,7 @@ namespace SmartHome.API.Controllers
             };
 
             if (!conditionMet)
-                return Ok("Condition not met");
+                return Ok("Η συνθήκη δεν ικανοποιήθηκε.");
 
             switch (automation.Action)
             {
@@ -212,9 +297,11 @@ namespace SmartHome.API.Controllers
 
             return Ok(new
             {
-                message = "Automation executed successfully",
+                message = "Ο αυτοματισμός εκτελέστηκε επιτυχώς.",
                 deviceId = automation.TargetDevice.Id,
-                newStatus = automation.TargetDevice.Status.ToString()
+                newStatus = automation.TargetDevice.Status == DeviceStatus.On
+                ? "Ενεργή"
+                : "Ανενεργή"
             });
         }
 
@@ -223,7 +310,7 @@ namespace SmartHome.API.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
-                throw new UnauthorizedAccessException("Invalid token");
+                throw new UnauthorizedAccessException("Μη έγκυρο διακριτικό σύνδεσης.");
 
             return int.Parse(userIdClaim);
         }

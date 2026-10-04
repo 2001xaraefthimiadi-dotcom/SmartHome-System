@@ -3,35 +3,35 @@
 @inject SmartHome.Blazor.Services.ApiService Api
 
 <div class="dashboard-title">
-    Smart Home Dashboard
+    Πίνακας Ελέγχου Έξυπνου Σπιτιού
 </div>
 
 <div class="row g-4 mb-4">
 
     <div class="col-md-3">
         <div class="card shadow p-4">
-            <h6 class="text-muted">Total Devices</h6>
+            <h6 class="text-muted">Σύνολο Συσκευών</h6>
             <h2>@totalDevices</h2>
         </div>
     </div>
 
     <div class="col-md-3">
         <div class="card shadow p-4">
-            <h6 class="text-muted">Online Devices</h6>
+            <h6 class="text-muted">Συνδεδεμένες Συσκευές</h6>
             <h2 class="text-success">@onlineDevices</h2>
         </div>
     </div>
 
     <div class="col-md-3">
         <div class="card shadow p-4">
-            <h6 class="text-muted">Active Automations</h6>
+            <h6 class="text-muted">Ενεργοί Αυτοματισμοί</h6>
             <h2 class="text-primary">@activeAutomations</h2>
         </div>
     </div>
 
     <div class="col-md-3">
         <div class="card shadow p-4">
-            <h6 class="text-muted">Powered On</h6>
+            <h6 class="text-muted">Ενεργοποιημένες Συσκευές</h6>
             <h2 class="text-warning">@poweredOnDevices</h2>
         </div>
     </div>
@@ -42,25 +42,37 @@
 
     <div class="col-md-4">
         <div class="card shadow p-4">
-            <h4>🏠 Devices</h4>
-            <p class="text-muted">Manage and monitor your smart devices.</p>
-            <NavLink href="/devices" class="btn btn-primary">Open Devices</NavLink>
+            <h4>🏠 Συσκευές</h4>
+            <p class="text-muted">
+                Διαχείριση και παρακολούθηση των έξυπνων συσκευών.
+            </p>
+            <NavLink href="/devices" class="btn btn-primary">
+                Άνοιγμα Συσκευών
+            </NavLink>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="card shadow p-4">
-            <h4>⚡ Energy Analytics</h4>
-            <p class="text-muted">View energy usage and analytics.</p>
-            <NavLink href="/energy" class="btn btn-primary">Open Dashboard</NavLink>
+            <h4>⚡ Ανάλυση Ενέργειας</h4>
+            <p class="text-muted">
+                Προβολή κατανάλωσης και ενεργειακών δεδομένων.
+            </p>
+            <NavLink href="/energy" class="btn btn-primary">
+                Άνοιγμα Πίνακα Ενέργειας
+            </NavLink>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="card shadow p-4">
-            <h4>🤖 Automation</h4>
-            <p class="text-muted">Configure automation rules.</p>
-            <NavLink href="/automations" class="btn btn-primary">Open Automations</NavLink>
+            <h4>🤖 Αυτοματισμοί</h4>
+            <p class="text-muted">
+                Διαμόρφωση και διαχείριση κανόνων αυτοματισμού.
+            </p>
+            <NavLink href="/automations" class="btn btn-primary">
+                Άνοιγμα Αυτοματισμών
+            </NavLink>
         </div>
     </div>
 
@@ -70,17 +82,25 @@
 
     <div class="col-md-6">
         <div class="card shadow p-4">
-            <h4>📡 Simulation Engine</h4>
-            <p class="text-muted">Simulate sensors and smart home activity.</p>
-            <NavLink href="/simulation" class="btn btn-dark">Open Simulation</NavLink>
+            <h4>📡 Προσομοίωση</h4>
+            <p class="text-muted">
+                Προσομοίωση αισθητήρων και λειτουργιών του έξυπνου σπιτιού.
+            </p>
+            <NavLink href="/simulation" class="btn btn-dark">
+                Άνοιγμα Προσομοίωσης
+            </NavLink>
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="card shadow p-4">
-            <h4>🔐 Authentication</h4>
-            <p class="text-muted">Secure JWT login system.</p>
-            <NavLink href="/login" class="btn btn-outline-primary">Login</NavLink>
+            <h4>🔐 Αυθεντικοποίηση</h4>
+            <p class="text-muted">
+                Ασφαλής σύνδεση χρήστη με χρήση JWT.
+            </p>
+            <NavLink href="/login" class="btn btn-outline-primary">
+                Σύνδεση
+            </NavLink>
         </div>
     </div>
 
@@ -102,6 +122,7 @@
             await InvokeAsync(StateHasChanged);
         });
     }
+
     async Task LoadDashboardStats()
     {
         try

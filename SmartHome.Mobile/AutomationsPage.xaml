@@ -2,17 +2,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SmartHome.Mobile.AutomationsPage"
              BackgroundColor="#F4F6FB"
-             Title="Automations">
+             Title="Αυτοματισμοί">
 
     <Grid Padding="25"
           RowDefinitions="Auto,*,Auto"
           RowSpacing="15">
 
-        <Label Grid.Row="0"
-               Text="Automations"
-               FontSize="28"
-               FontAttributes="Bold"
-               TextColor="#0F172A" />
+        <Grid Grid.Row="0"
+      ColumnDefinitions="*,Auto"
+      ColumnSpacing="15">
+
+            <Label Grid.Column="0"
+           Text="Αυτοματισμοί"
+           FontSize="28"
+           FontAttributes="Bold"
+           TextColor="#0F172A"
+           VerticalOptions="Center" />
+
+            <Button Grid.Column="1"
+            Text="+ Νέος"
+            Clicked="OnCreateAutomationClicked"
+            BackgroundColor="#2563EB"
+            TextColor="White"
+            FontAttributes="Bold"
+            CornerRadius="10" />
+
+        </Grid>
 
         <CollectionView Grid.Row="1"
                         x:Name="AutomationsCollection">
@@ -39,6 +54,9 @@
 
                             <Label Text="{Binding ConditionText}"
                                    TextColor="#64748B" />
+                            
+                            <Label Text="{Binding TargetDeviceText}"
+                                   TextColor="#64748B" />
 
                             <Label Text="{Binding ActionText}"
                                    TextColor="#2563EB"
@@ -47,6 +65,28 @@
                             <Label Text="{Binding StatusText}"
                                    TextColor="#16A34A"
                                    FontAttributes="Bold" />
+
+                            <Grid ColumnDefinitions="*,*"
+                                  ColumnSpacing="10"
+                                  Margin="0,10,0,0">
+
+                                        <Button Grid.Column="0"
+                                        Text="✏ Επεξεργασία"
+                                        CommandParameter="{Binding Id}"
+                                        Clicked="OnEditAutomationClicked"
+                                        BackgroundColor="#2563EB"
+                                        TextColor="White"
+                                        CornerRadius="8" />
+
+                                        <Button Grid.Column="1"
+                                        Text="🗑 Διαγραφή"
+                                        CommandParameter="{Binding Id}"
+                                        Clicked="OnDeleteAutomationClicked"
+                                        BackgroundColor="#DC2626"
+                                        TextColor="White"
+                                        CornerRadius="8" />     
+
+                            </Grid>
 
                         </VerticalStackLayout>
 

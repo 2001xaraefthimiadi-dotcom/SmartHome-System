@@ -45,7 +45,7 @@ public partial class DeviceDetailsPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                MessageLabel.Text = "You are not authenticated.";
+                MessageLabel.Text = "Δεν έχετε συνδεθεί.";
                 return;
             }
 
@@ -61,7 +61,7 @@ public partial class DeviceDetailsPage : ContentPage
 
             if (!devicesResponse.IsSuccessStatusCode)
             {
-                MessageLabel.Text = "Failed to load device.";
+                MessageLabel.Text = "Αποτυχία φόρτωσης της συσκευής.";
                 return;
             }
 
@@ -80,14 +80,14 @@ public partial class DeviceDetailsPage : ContentPage
 
             if (device is null)
             {
-                MessageLabel.Text = "Device not found.";
+                MessageLabel.Text = "Η συσκευή δεν βρέθηκε.";
                 return;
             }
 
             DeviceNameLabel.Text = device.Name;
             LocationLabel.Text = $"📍 {device.Location}";
-            StatusLabel.Text = device.Status == 1 ? "ON" : "OFF";
-            OnlineLabel.Text = device.IsOnline ? "Online" : "Offline";
+            StatusLabel.Text = device.Status == 1 ? "ΕΝΕΡΓΗ" : "ΑΝΕΝΕΡΓΗ";
+            OnlineLabel.Text = device.IsOnline ? "Συνδεδεμένη" : "Εκτός σύνδεσης";
             DeviceTypeLabel.Text = GetDeviceType(device.Type);
             DeviceIconLabel.Text = GetDeviceIcon(device.Type);
             PowerLabel.Text = $"{device.PowerConsumption:N1} W";
@@ -126,20 +126,21 @@ public partial class DeviceDetailsPage : ContentPage
                     })
                     .ToList();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text =
+                "Παρουσιάστηκε σφάλμα κατά τη φόρτωση των στοιχείων της συσκευής.";
         }
     }
 
     private static string GetDeviceType(int type) => type switch
     {
-        1 => "Light",
-        2 => "Thermostat",
-        3 => "Sensor",
-        4 => "Smart Plug",
-        5 => "Door Lock",
-        _ => "Unknown"
+        1 => "Φωτισμός",
+        2 => "Θερμοστάτης",
+        3 => "Αισθητήρας",
+        4 => "Έξυπνη Πρίζα",
+        5 => "Έξυπνη Κλειδαριά",
+        _ => "Άγνωστο"
     };
 
     private static string GetDeviceIcon(int type) => type switch

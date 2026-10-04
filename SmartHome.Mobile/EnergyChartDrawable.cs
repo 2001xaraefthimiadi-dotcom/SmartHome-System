@@ -15,7 +15,7 @@ public class EnergyChartDrawable : IDrawable
             canvas.FontSize = 14;
 
             canvas.DrawString(
-                "No energy data available",
+                "Δεν υπάρχουν διαθέσιμα δεδομένα ενέργειας",
                 dirtyRect,
                 HorizontalAlignment.Center,
                 VerticalAlignment.Center);

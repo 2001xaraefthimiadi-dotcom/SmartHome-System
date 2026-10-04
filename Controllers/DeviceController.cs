@@ -42,7 +42,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             return Ok(device);
         }
@@ -79,7 +79,7 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             device.Name = request.Name;
             device.Type = request.Type;
@@ -102,12 +102,12 @@ namespace SmartHome.API.Controllers
                 .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
 
             if (device == null)
-                return NotFound("Device not found");
+                return NotFound("Η συσκευή δεν βρέθηκε.");
 
             _context.Devices.Remove(device);
             await _context.SaveChangesAsync();
 
-            return Ok("Device deleted");
+            return Ok("Η συσκευή διαγράφηκε");
         }
 
         private int GetUserId()
@@ -115,7 +115,7 @@ namespace SmartHome.API.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim))
-                throw new UnauthorizedAccessException("Invalid token");
+                throw new UnauthorizedAccessException("Μη έγκυρο διακριτικό σύνδεσης.");
 
             return int.Parse(userIdClaim);
         }

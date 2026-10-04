@@ -1,7 +1,7 @@
 ﻿using SmartHome.Mobile.Models;
+using SmartHome.Mobile.ViewModels;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using SmartHome.Mobile.ViewModels;
 
 namespace SmartHome.Mobile;
 
@@ -32,7 +32,7 @@ public partial class DevicesPage : ContentPage
 
             if (string.IsNullOrWhiteSpace(token))
             {
-                MessageLabel.Text = "Not authenticated.";
+                MessageLabel.Text = "Δεν έχετε συνδεθεί.";
                 return;
             }
 
@@ -43,7 +43,7 @@ public partial class DevicesPage : ContentPage
 
             if (!response.IsSuccessStatusCode)
             {
-                MessageLabel.Text = "Failed to load devices.";
+                MessageLabel.Text = "Αποτυχία φόρτωσης των συσκευών.";
                 return;
             }
 
@@ -71,9 +71,9 @@ public partial class DevicesPage : ContentPage
 
             DevicesCollection.ItemsSource = viewModels;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text = "Παρουσιάστηκε σφάλμα κατά τη φόρτωση των συσκευών.";
         }
     }
     private async void OnDeviceTapped(object? sender, TappedEventArgs e)
@@ -101,9 +101,9 @@ public partial class DevicesPage : ContentPage
         {
             await LoadDevices();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            MessageLabel.Text = ex.Message;
+            MessageLabel.Text = "Παρουσιάστηκε σφάλμα κατά την ανανέωση των συσκευών.";
         }
     }
 }

@@ -99,13 +99,24 @@ namespace SmartHome.Blazor.Services
         public async Task<bool> CreateAutomation(AutomationModel automation)
         {
             await AddAuthHeader();
+
             var response = await _http.PostAsJsonAsync("/api/Automation", new
             {
                 name = automation.Name,
                 conditionType = automation.ConditionType,
                 conditionValue = automation.ConditionValue,
+
+                sourceDeviceId = automation.ConditionType == 4
+                    ? null
+                    : automation.SourceDeviceId,
+
                 targetDeviceId = automation.TargetDeviceId,
-                action = automation.Action
+                action = automation.Action,
+
+                scheduledTime = automation.ConditionType == 4 &&
+                                automation.ScheduledTime.HasValue
+                    ? automation.ScheduledTime.Value.ToString("HH:mm:ss")
+                    : null
             });
 
             return response.IsSuccessStatusCode;
@@ -236,7 +247,25 @@ namespace SmartHome.Blazor.Services
 
             var response = await _http.PutAsJsonAsync(
                 $"/api/Automation/{automation.Id}",
-                automation);
+                new
+                {
+                    name = automation.Name,
+                    conditionType = automation.ConditionType,
+                    conditionValue = automation.ConditionValue,
+
+                    sourceDeviceId = automation.ConditionType == 4
+                        ? null
+                        : automation.SourceDeviceId,
+
+                    targetDeviceId = automation.TargetDeviceId,
+                    action = automation.Action,
+                    isActive = automation.IsActive,
+
+                    scheduledTime = automation.ConditionType == 4 &&
+                                    automation.ScheduledTime.HasValue
+                        ? automation.ScheduledTime.Value.ToString("HH:mm:ss")
+                        : null
+                });
 
             return response.IsSuccessStatusCode;
         }

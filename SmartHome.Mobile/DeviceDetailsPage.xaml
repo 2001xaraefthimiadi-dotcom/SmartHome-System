@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="SmartHome.Mobile.DeviceDetailsPage"
-    Title="Device Details"
+    Title="Λεπτομέρειες Συσκευής"
     BackgroundColor="#F4F6FB">
 
     <ScrollView>
@@ -27,14 +27,14 @@
                            HorizontalOptions="Center" />
 
                     <Label x:Name="DeviceNameLabel"
-                           Text="Device"
+                           Text="Συσκευή"
                            FontSize="28"
                            FontAttributes="Bold"
                            TextColor="#0F172A"
                            HorizontalOptions="Center" />
 
                     <Label x:Name="LocationLabel"
-                           Text="Location"
+                           Text="Τοποθεσία"
                            TextColor="#64748B"
                            HorizontalOptions="Center" />
 
@@ -56,40 +56,40 @@
 
                     <Label Grid.Row="0"
                            Grid.Column="0"
-                           Text="Status"
+                           Text="Κατάσταση"
                            FontAttributes="Bold" />
 
                     <Label Grid.Row="0"
                            Grid.Column="1"
                            x:Name="StatusLabel"
-                           Text="OFF"
+                           Text="ΑΝΕΝΕΡΓΗ"
                            TextColor="#16A34A"
                            FontAttributes="Bold" />
 
                     <Label Grid.Row="1"
                            Grid.Column="0"
-                           Text="Online"
+                           Text="Σύνδεση"
                            FontAttributes="Bold" />
 
                     <Label Grid.Row="1"
                            Grid.Column="1"
                            x:Name="OnlineLabel"
-                           Text="Offline"
+                           Text="Εκτός σύνδεσης"
                            TextColor="#2563EB" />
 
                     <Label Grid.Row="2"
                            Grid.Column="0"
-                           Text="Device Type"
+                           Text="Τύπος Συσκευής"
                            FontAttributes="Bold" />
 
                     <Label Grid.Row="2"
                            Grid.Column="1"
                            x:Name="DeviceTypeLabel"
-                           Text="Unknown" />
+                           Text="Άγνωστος" />
 
                     <Label Grid.Row="3"
                            Grid.Column="0"
-                           Text="Power Consumption"
+                           Text="Κατανάλωση Ισχύος"
                            FontAttributes="Bold" />
 
                     <Label Grid.Row="3"
@@ -103,13 +103,13 @@
 
             </Border>
 
-            <Label Text="Recent Energy Logs"
+            <Label Text="Πρόσφατες Καταγραφές Ενέργειας"
                    FontSize="22"
                    FontAttributes="Bold"
                    TextColor="#0F172A" />
 
             <CollectionView x:Name="EnergyLogsCollection"
-                            EmptyView="No energy logs found.">
+                            EmptyView="Δεν βρέθηκαν καταγραφές ενέργειας.">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>

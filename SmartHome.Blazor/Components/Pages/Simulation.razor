@@ -4,27 +4,26 @@
 
 @using SmartHome.Blazor.Models
 
-
 <div class="container mt-4">
 
-    <h1 class="mb-4">Smart Home Simulation</h1>
+    <h1 class="mb-4">Προσομοίωση Έξυπνου Σπιτιού</h1>
 
     <div class="row">
 
-        <!-- LEFT PANEL -->
+        <!-- ΑΡΙΣΤΕΡΟ ΠΑΝΕΛ -->
         <div class="col-md-4">
 
             <div class="card shadow p-4">
 
-                <h4 class="mb-3">Sensor Input</h4>
+                <h4 class="mb-3">Εισαγωγή Μέτρησης Αισθητήρα</h4>
 
                 <div class="mb-3">
 
-                    <label class="form-label">Device</label>
+                    <label class="form-label">Συσκευή</label>
 
                     <select class="form-select" @bind="reading.DeviceId">
 
-                        <option value="0">Select Device</option>
+                        <option value="0">Επιλέξτε συσκευή</option>
 
                         @if (devices != null)
                         {
@@ -42,19 +41,19 @@
 
                 <div class="mb-3">
 
-                    <label class="form-label">Reading Type</label>
+                    <label class="form-label">Τύπος Μέτρησης</label>
 
                     <select class="form-select" @bind="reading.ReadingType">
-                        <option value="1">Temperature</option>
-                        <option value="2">Humidity</option>
-                        <option value="3">Energy</option>
+                        <option value="1">Θερμοκρασία</option>
+                        <option value="2">Υγρασία</option>
+                        <option value="3">Ενέργεια</option>
                     </select>
 
                 </div>
 
                 <div class="mb-3">
 
-                    <label class="form-label">Value</label>
+                    <label class="form-label">Τιμή</label>
 
                     <input class="form-control"
                            type="number"
@@ -66,30 +65,31 @@
                 <button class="btn btn-primary w-100"
                         @onclick="SendReading">
 
-                    Send Reading
+                    Αποστολή Μέτρησης
 
                 </button>
 
             </div>
 
         </div>
-        <!-- RIGHT PANEL -->
+
+        <!-- ΔΕΞΙ ΠΑΝΕΛ -->
         <div class="col-md-8">
 
             <div class="card shadow p-4">
 
-                <h4 class="mb-3">Simulation Result</h4>
+                <h4 class="mb-3">Αποτέλεσμα Προσομοίωσης</h4>
 
                 @if (string.IsNullOrEmpty(responseMessage))
                 {
                     <div class="alert alert-secondary">
-                        No simulation executed yet.
+                        Δεν έχει εκτελεστεί ακόμη κάποια προσομοίωση.
                     </div>
                 }
                 else
                 {
                     <div class="alert alert-success">
-                        Simulation executed successfully.
+                        Η προσομοίωση εκτελέστηκε επιτυχώς.
                     </div>
 
                     <pre class="bg-dark text-light p-3 rounded">
@@ -103,11 +103,11 @@
 
             <div class="card shadow p-4">
 
-                <h4 class="mb-3">Connected Devices</h4>
+                <h4 class="mb-3">Συνδεδεμένες Συσκευές</h4>
 
                 @if (devices == null)
                 {
-                    <p>Loading devices...</p>
+                    <p>Φόρτωση συσκευών...</p>
                 }
                 else
                 {
@@ -116,10 +116,10 @@
                         <thead>
 
                             <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Online</th>
+                                <th>Όνομα</th>
+                                <th>Τοποθεσία</th>
+                                <th>Κατάσταση</th>
+                                <th>Σύνδεση</th>
                             </tr>
 
                         </thead>
@@ -139,13 +139,13 @@
                                         @if (device.Status == 1)
                                         {
                                             <span class="badge bg-success">
-                                                ON
+                                                ΕΝΕΡΓΗ
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="badge bg-secondary">
-                                                OFF
+                                                ΑΝΕΝΕΡΓΗ
                                             </span>
                                         }
 
@@ -156,13 +156,13 @@
                                         @if (device.IsOnline)
                                         {
                                             <span class="text-success">
-                                                ● Online
+                                                ● Συνδεδεμένη
                                             </span>
                                         }
                                         else
                                         {
                                             <span class="text-danger">
-                                                ● Offline
+                                                ● Εκτός σύνδεσης
                                             </span>
                                         }
 
@@ -184,9 +184,8 @@
 
 </div>
 
-@code 
+@code
 {
-
     List<DeviceModel>? devices;
 
     ReadingModel reading = new()
